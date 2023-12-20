@@ -1,0 +1,30 @@
+{
+    "bookingId": "TJS102300663866",
+    "type": "CANCELLATION",
+    "remarks":"test CANCELLATION",
+    "trips": [
+        {
+            "src": "BOM",
+            "dest": "DEL",
+            "departureDate": "2020-10-19",
+            "travellers": [
+                {
+                    "fn": "TESTA",
+                    "ln": "TESTA"
+                },
+                {
+                    "fn": "TESTD",
+                    "ln": "TESTD"
+                },
+                {
+                    "fn": "TESTB",
+                    "ln": "TESTB"
+                },
+                {
+                    "fn": "TESTc",
+                    "ln": "TESTc"
+                }
+            ]
+        }
+    ]
+}

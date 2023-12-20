@@ -1,0 +1,1 @@
+{"fareRule":{"DEL-CCU":{"fr":{"CANCELLATION":{"DEFAULT":{"amount":3600.00,"additionalFee":50.00,"fcs":{"CCFT":9.00,"ACF":3600.00,"CCF":50.00,"ACFT":180.00}}},"DATECHANGE":{"DEFAULT":{"amount":3350.00,"additionalFee":50.00,"policyInfo":"+ Fare Difference if any","fcs":{"ARF":3350.00,"CRFT":9.00,"ARFT":167.50,"CRF":50.00}}}}}},"status":{"success":true,"httpStatus":200}}

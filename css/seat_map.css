@@ -1,0 +1,24 @@
+.seat_map{
+display: inline-block;
+ margin: 0 23px;	
+ height: 60px;
+}
+.seatmapchange .active{
+	background-color: #3168e8;
+    color: #eee;
+    padding: 10px 20px;
+}
+.openclosebaseprice{
+    background-color: #4c4c4c;
+    color: #fff;
+    display: inline-block;
+    padding: 0px 5px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-left: 5px;
+    width: 18px;
+    text-align: center;
+}
+.hidecommall{
+	display: none;
+}

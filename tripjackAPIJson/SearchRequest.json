@@ -1,0 +1,51 @@
+{
+
+  "searchQuery": {
+
+    "cabinClass": "ECONOMY",
+
+    "paxInfo": {
+
+      "ADULT": "1",
+
+      "CHILD": "0",
+
+      "INFANT": "0"
+
+    },
+
+    "routeInfos": [
+
+      {
+
+        "fromCityOrAirport": {
+
+          "code": "DEL"
+
+        },
+
+        "toCityOrAirport": {
+
+          "code": "CCU"
+
+        },
+
+        "travelDate": "2023-11-03"
+
+      }
+
+    ],
+
+    "searchModifiers": {
+
+      "isDirectFlight": true,
+	  
+	 "pft": "",
+	 
+      "isConnectingFlight": true
+
+    }
+
+  }
+
+}

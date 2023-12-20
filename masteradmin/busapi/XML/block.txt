@@ -1,0 +1,1 @@
+{"availableTripId":"2001920841780153900","boardingPointId":"550548","destination":"1492","inventoryItems":[{"fare":"1877.40","ladiesSeat":"false","passenger":{"address":"Delhi","age":"30","email":"flyexxfly@gmail.com","gender":"male","idNumber":null,"idType":null,"mobile":"7760443333","name":"Gopal Haribhai Parmar","primary":"true","title":"Mr"},"seatName":"S3"}],"source":"1287"}
