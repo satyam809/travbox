@@ -374,7 +374,7 @@ if (!empty($_GET['booked-hotels']) && $_GET['booked-hotels'] == 1) {
 
     $offset = $page * $limit; // Calculate offset
 
-    $dataSQL = "SELECT * FROM test_bookings WHERE user_id = ? LIMIT ?, ?";
+    $dataSQL = "SELECT * FROM test_bookings WHERE user_id = ? order by id desc LIMIT ?, ?";
     $stmtData = mysqli_prepare(db(), $dataSQL);
     mysqli_stmt_bind_param($stmtData, "iii", $user_id, $offset, $limit);
     mysqli_stmt_execute($stmtData);
