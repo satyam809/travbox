@@ -1,1034 +1,786 @@
-<?php 
-include "inc.php"; 
-include "config/logincheck.php"; 
-$page='hotels';
-$selectedpage='hotels';
+<?php
 
+include "inc.php";
 
-function gethotelimgna($imgname){
-if(strpos($imgname, 'HotelNA.jpg') !== false){
-    return 'images/nohotelimage.png';
-} else {
-return $imgname;
-}
-}
+include "config/logincheck.php";
 
+$page = 'hotels';
 
-$agentid=$_SESSION['agentUserid'];
+$selectedpage = 'hotels';
 
-$category='';
+function gethotelimgna($imgname)
+{
 
-if(!empty($_REQUEST['category'])) {
-    foreach($_REQUEST['category'] as $check) {
-        $category.=$check.','; 
+    if (strpos($imgname, 'HotelNA.jpg') !== false) {
+
+        return 'images/nohotelimage.png';
+    } else {
+
+        return $imgname;
     }
 }
-$starcategory=$_REQUEST['starcategory'];
- 
-$travellers='1 Room - 1 Guest';
-if($_REQUEST['travellers']!=''){
-$travellers=$_REQUEST['travellers'];
-}
 
-$starcategory='3, 4 Star';
-if($_REQUEST['starcategory']!=''){
-$starcategory=$_REQUEST['starcategory'];
-}
-$checkInDate=date('d-m-Y', strtotime('+1 days'));
-if($_REQUEST['checkInDate']!=''){
-$checkInDate=$_REQUEST['checkInDate'];
-}
-  
-$checkOutDate=date('d-m-Y', strtotime('+2 days'));
-if($_REQUEST['checkOutDate']!=''){
-$checkOutDate=$_REQUEST['checkOutDate'];
-}
- 
-$destinationHotel='130443,IN'; 
-if($_REQUEST['destinationHotel']!=''){
-$destinationHotel=$_REQUEST['destinationHotel'];
-}
- 
-$citydestination='Delhi,India'; 
-if($_REQUEST['citydestination']!=''){
-$citydestination=$_REQUEST['citydestination'];
-}
+$agentid = $_SESSION['agentUserid'];
 
 
-
-
-
-////////=============Online=======================================
-
-
-
-
- 
-
- 
 ?>
+
 <!DOCTYPE html>
+
 <html lang="en">
 
+
+
 <head>
+
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0" />
+
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-<title>Hotel Search - <?php echo stripslashes($getcompanybasicinfo['companyName']); ?></title>
-<?php include "headerinc.php"; ?>
 
 
- <style>
- .col-2 .card:first-child{margin-top:0px;}
- .col-9 .card:first-child{margin-top:0px;}
- </style>
- 
+    <title>Hotel Search - <?php echo stripslashes($getcompanybasicinfo['companyName']); ?></title>
+
+    <?php include "headerinc.php"; ?>
+
+
+
+
+
+    <style>
+        .col-2 .card:first-child {
+            margin-top: 0px;
+        }
+
+        .col-9 .card:first-child {
+            margin-top: 0px;
+        }
+    </style>
+
+
+
 </head>
+
+
 
 <body class="greybluebg">
 
-<?php include "header.php"; ?>
-<div class="top_bg_ofr_sb top_bg_ofr_sb2other homeflightsearchouterbox hotelmainbg" style="margin-bottom: 90px;padding: 50px 0px;">
-   
-    
-    <div class="container mobilecontainer" style="padding:0px 20px;"> 
-    <div class="flightsearchwihite hotelsearchwhite">
-     
-    <script>
-    $(document).mouseup(function(e)
-    {
-        var container = $("#fromflightdestination"); 
-        if (!container.is(e.target) && container.has(e.target).length === 0) 
-        {
-            $('#searchcitylistsfromCity').hide();
-        } else { 
-        
-        $('#searchcitylistsfromCity2').hide();
-        }
-        
-         var container = $("#toflightdestination"); 
-        if (!container.is(e.target) && container.has(e.target).length === 0) 
-        {
-            $('#searchcitylistsfromCity2').hide();
-        } else { 
-        
-        $('#searchcitylistsfromCity').hide();
-        }
-    });
-    
-    
-     
-    </script>
-    <div class="searchboxouter flightsearchhomebox hotelboxouter">
-    <form  method="GET" id="formids" action="<?php echo $fullurl; ?>hotel-search" > 
-                    <input type="hidden" name="tripType" id="tripType" value="1">
-    <div class="tableborder hoteltableborder">
-    <table width="100%" border="0" cellpadding="0" cellspacing="0">
-      <tbody><tr>
-        <td width="20%" align="left" valign="top" id="fromflightdestination"> 
-         	<div style="height:0px; font-size:0px; position:relative; width: 100%; text-align: left;" id="searchcitylistsfromCity3"></div>
-        <div class="lable" id="fromlabel"><span class="cityspan">Enter city name,</span> Location</div>
-                <label>        
-        <div style="height: 0px; font-size: 0px; position: relative; width: 100%; text-align: left; display: none;" id="searchcitylistsfromCity"></div>
-          <input  type="text" onClick="$('#pickupCitySearchfromCity3').select();" class="textfield" requered="" onKeyUp="getSearchCityHotel('pickupCitySearchfromCity3','destinationHotel','searchcitylistsfromCity3');" id="pickupCitySearchfromCity3" name="citydestination" value="<?php echo $citydestination; ?>" autocomplete="nope" >
-	  
-	  <input name="destinationHotel" id="destinationHotel" type="hidden" value="<?php echo $destinationHotel; ?>" autocomplete="nope">
-	  </label>
-          <div class="swapbtn hotelswapbtn" onClick="swapdata();"><i class="fa fa-exchange" aria-hidden="true"></i></div>         </td> 
-        <td width="18%" align="left" valign="top"> <label>   <div class="lable" id="departurelabel">CHECK IN</div><input type="text" id="dt1" name="checkInDate" class="textfield"  value="<?php echo trim($checkInDate); ?>" autocomplete="off"  ><i class="fa fa-calendar" aria-hidden="true"></i></label></td>
-        <td width="18%" align="left" valign="top" onClick="selecttb(2);" class="selectreturnflightcl">
-         <label>   
-        <div class="lable" id="returnlable">CHECK OUT</div>
-        <input type="text" id="dt2" name="checkOutDate" class="textfield"  value="<?php echo trim($checkOutDate); ?>" autocomplete="off"   ><i class="fa fa-calendar" aria-hidden="true"></i></td>
-        
-        <td width="20%" align="left" valign="top"  >
-	<div class="lable" id="travellable">Rooms &amp; Guests</div>
-	<input type="text" id="travellersshow"  name="travellers"  class="textfield"  value="<?php echo trim($travellers); ?>" autocomplete="nope" readonly="readonly" onClick="$('#basicDropdownClick').show();" >
-							
-	  <script>
-  $('#basicDropdownClick').click(function(event){
-  event.stopPropagation();
-});
-  </script>
- 
- 
- <style>
- #basicDropdownClick .form-group{margin-right:10px;margin-bottom: 10px !important;}
- 
- </style>
- <div id="basicDropdownClick" class="dropdown-menu dropdown-unfold col-11 m-0" aria-labelledby="basicDropdownClickInvoker" style="max-width: 510px; width:510px; padding:10px; right:0px;">
-                   <div class=" "  style="margin-bottom: 10px; width:100%; position:relative;">
-					  <strong>Guests</strong> <i class="fa fa-times" aria-hidden="true" style="position: absolute; right: 0px; cursor: pointer; top: 4px; font-size: 16px; color: #000;" onClick="$('#basicDropdownClick').hide();"></i>					  </div>
-					  
-					<?php 
-					$empno=1;
-					for($empno=1; $empno<=$_GET['empcount']; $empno++){
-					
-					?> 
-					<div class="row" id="empInfoId<?php echo $empno; ?>" style="margin-right: 0px; margin-left: 1px;">
-					
-					<div class="roomguestblockdiv">
-					<div class="form-group">  
-						<div style="font-weight: 500; margin-top:27px">Room - <?php echo $empno; ?></div>
-					</div>
-					</div>
-					<div class="roomguestblockdiv">
-					<div class="form-group"> <?php if($empno==1){ ?><label for="subject">Adult</label><?php } ?>
-					
-					<select class="form-control select2 pax" id="noadults<?php echo $empno; ?>" name="noadults<?php echo $empno; ?>" onChange="gettotalpax();"> 
-												<option value="1" <?php if($_GET['noadults'.$empno]=='1'){ echo 'selected'; }?> >1 Adult</option>
-												<option value="2" <?php if($_GET['noadults'.$empno]=='2'){ echo 'selected'; }?>>2 Adults</option>
-												<option value="3" <?php if($_GET['noadults'.$empno]=='3'){ echo 'selected'; }?>>3 Adults</option> 
-												<option value="4" <?php if($_GET['noadults'.$empno]=='4'){ echo 'selected'; }?>>4 Adults</option> 
-												</select> 
-					</div>
-					</div>
-					<div class="roomguestblockdiv">
-					<div class="form-group"><?php if($empno==1){ ?><label for="subject">Child</label><?php } ?>
-					
-					<select class="form-control select2 pax" id="nochilds<?php echo $empno; ?>" name="nochilds<?php echo $empno; ?>" onChange="showAgeColumn<?php echo $empno; ?>(this.value);gettotalpax();"> 
-						<option value="0" <?php if($_GET['nochilds'.$empno]=='0'){ echo 'selected'; }?>>0 Child</option>
-						<option value="1" <?php if($_GET['nochilds'.$empno]=='1'){ echo 'selected'; }?>>1 Child</option>
-						<option value="2" <?php if($_GET['nochilds'.$empno]=='2'){ echo 'selected'; }?>>2 Childs</option> 
-					</select> 
-					</div>
-					</div>
-					<script>
-					function showAgeColumn<?php echo $empno; ?>(numChild){
-					//var numChild = ().val();
-					if(numChild==1){
-						$('#childAgediv1<?php echo $empno; ?>').show();
-						$('#childAgediv2<?php echo $empno; ?>').hide();
-					}
-					if(numChild==2){
-						$('#childAgediv1<?php echo $empno; ?>').show();
-						$('#childAgediv2<?php echo $empno; ?>').show();
-					}
-					if(numChild==0){
-						$('#childAgediv1<?php echo $empno; ?>').hide();
-						$('#childAgediv2<?php echo $empno; ?>').hide();
-					}
-					}
-					showAgeColumn<?php echo $empno; ?>(<?php echo $_GET['nochilds'.$empno]; ?>);
-					</script>
-					
-					<div class="roomguestblockdiv" id="childAgediv1<?php echo $empno; ?>" >
-					<div class="form-group"><?php if($empno==1){ ?><label for="subject">Child Age</label><?php } ?>
-					<select class="form-control" id="age1<?php echo $empno; ?>" name="age1<?php echo $empno; ?>"> 
-						<option value="0" <?php if($_GET['age1'.$empno]=='0'){ echo 'selected'; }?>>0</option>
-						<option value="1" <?php if($_GET['age1'.$empno]=='1'){ echo 'selected'; }?>>1</option>
-						<option value="2" <?php if($_GET['age1'.$empno]=='2'){ echo 'selected'; }?>>2</option> 
-						<option value="3" <?php if($_GET['age1'.$empno]=='3'){ echo 'selected'; }?>>3</option>
-						<option value="4" <?php if($_GET['age1'.$empno]=='4'){ echo 'selected'; }?>>4</option>
-						<option value="5" <?php if($_GET['age1'.$empno]=='5'){ echo 'selected'; }?>>5</option>
-						<option value="6" <?php if($_GET['age1'.$empno]=='6'){ echo 'selected'; }?>>6</option>
-						<option value="7" <?php if($_GET['age1'.$empno]=='7'){ echo 'selected'; }?>>7</option>
-						<option value="8" <?php if($_GET['age1'.$empno]=='8'){ echo 'selected'; }?>>8</option>
-						<option value="9" <?php if($_GET['age1'.$empno]=='9'){ echo 'selected'; }?>>9</option>
-						<option value="10" <?php if($_GET['age1'.$empno]=='10'){ echo 'selected'; }?>>10</option>
-						<option value="11" <?php if($_GET['age1'.$empno]=='11'){ echo 'selected'; }?>>11</option>
-					</select> 
-					</div>
-					</div>
-					<div class="roomguestblockdiv" id="childAgediv2<?php echo $empno; ?>" >
-					<div class="form-group"><?php if($empno==1){ ?><label for="subject">Child Age</label><?php } ?>
-					<select class="form-control" id="age2<?php echo $empno; ?>" name="age2<?php echo $empno; ?>"> 
-						<option value="0" <?php if($_GET['age2'.$empno]=='0'){ echo 'selected'; }?>>0</option>
-						<option value="1" <?php if($_GET['age2'.$empno]=='1'){ echo 'selected'; }?>>1</option>
-						<option value="2" <?php if($_GET['age2'.$empno]=='2'){ echo 'selected'; }?>>2</option> 
-						<option value="3" <?php if($_GET['age2'.$empno]=='3'){ echo 'selected'; }?>>3</option>
-						<option value="4" <?php if($_GET['age2'.$empno]=='4'){ echo 'selected'; }?>>4</option>
-						<option value="5" <?php if($_GET['age2'.$empno]=='5'){ echo 'selected'; }?>>5</option>
-						<option value="6" <?php if($_GET['age2'.$empno]=='6'){ echo 'selected'; }?>>6</option>
-						<option value="7" <?php if($_GET['age2'.$empno]=='7'){ echo 'selected'; }?>>7</option>
-						<option value="8" <?php if($_GET['age2'.$empno]=='8'){ echo 'selected'; }?>>8</option>
-						<option value="9" <?php if($_GET['age2'.$empno]=='9'){ echo 'selected'; }?>>9</option>
-						<option value="10" <?php if($_GET['age2'.$empno]=='10'){ echo 'selected'; }?>>10</option>
-						<option value="11" <?php if($_GET['age2'.$empno]=='11'){ echo 'selected'; }?>>11</option>
-					</select> 
-					</div>
-					</div>
-					
-					<div class="roomguestblockdiv">
-					<div class="form-group"> 
-					<?php if($empno==1){ ?>
-					<i class="fa fa-plus" aria-hidden="true" style="margin-top: 29px; cursor: pointer; background-color: #000; padding: 6px 8px; color: #fff; border-radius: 2px; font-size: 12px;margin-left: 2px;" onClick="addEmpInfo();"></i>
-					<?php }else{ ?>
-					<i class="fa fa-trash" aria-hidden="true" style="margin-top:6px; cursor: pointer; background-color: #f1646c; padding: 6px 8px; color: #fff; border-radius: 2px; font-size: 12px;margin-left: 2px;"  onclick="removeEmpInfo(<?php echo $empno; ?>);"></i>
-					<?php } ?>
-					</div>
-					</div>
-					</div>
-					<?php 
-					  }
-					
-					if($empno==1){
-					?> 
-					<div class="row" id="empInfoId1" style="margin-right: 0px; margin-left: 1px;">
-					
-					<div class="roomguestblockdiv">
-					<div class="form-group">   
-						<div style="font-weight: 500; margin-top:27px;">Room - 1</div>
-					</div>
-					</div>
-					<div class="roomguestblockdiv">
-					<div class="form-group"><label for="subject">Adult</label>  
-					
-					<select class="form-control select2 pax" id="noadults1" name="noadults1" onChange="gettotalpax();"> 
-												<option value="1" selected="selected">1 Adult</option>
-												<option value="2">2 Adults</option>
-												<option value="3">3 Adults</option> 
-												<option value="4">4 Adults</option> 
-												</select> 
-					</div>
-					</div>
-					<div class="roomguestblockdiv">
-					<div class="form-group"><label for="subject">Child</label>  
-					
-					<select class="form-control select2 pax" id="nochilds1" name="nochilds1" onChange="showAgeColumn1(this.value);gettotalpax();"> 
-						<option value="0" selected="selected">0 Child</option>
-						<option value="1">1 Child</option>
-						<option value="2">2 Childs</option> 
-					</select> 
-					</div>
-					</div>
-					<script>
-					function showAgeColumn1(numChild){
-						if(numChild==1){
-							$('#childAgediv11').show();
-							$('#childAgediv21').hide();
-						}
-						if(numChild==2){
-							$('#childAgediv11').show();
-							$('#childAgediv21').show();
-						}
-						if(numChild==0){
-							$('#childAgediv11').hide();
-							$('#childAgediv21').hide();
-						}
-					}
-					showAgeColumn1('0');
-					</script>
-					
-					<div class="roomguestblockdiv" id="childAgediv11" style="display:none;">
-					<div class="form-group"><label for="subject">Child Age</label>  
-					<select class="form-control" id="age11" name="age11"> 
-						<option value="0">0</option>
-						<option value="1">1</option>
-						<option value="2">2</option> 
-						<option value="3">3</option>
-						<option value="4">4</option>
-						<option value="5">5</option>
-						<option value="6">6</option>
-						<option value="7">7</option>
-						<option value="8">8</option>
-						<option value="9">9</option>
-						<option value="10">10</option>
-						<option value="11">11</option>
-					</select> 
-					</div>
-					</div>
-					<div class="roomguestblockdiv" id="childAgediv21" style="display:none;">
-					<div class="form-group"><label for="subject">Child Age</label>  
-					<select class="form-control" id="age21" name="age21"> 
-						<option value="0">0</option>
-						<option value="1">1</option>
-						<option value="2">2</option> 
-						<option value="3">3</option>
-						<option value="4">4</option>
-						<option value="5">5</option>
-						<option value="6">6</option>
-						<option value="7">7</option>
-						<option value="8">8</option>
-						<option value="9">9</option>
-						<option value="10">10</option>
-						<option value="11">11</option>
-					</select> 
-					</div>
-					</div>
-					
-					<div class="roomguestblockdiv">
-					<div class="form-group"> 
-					<i class="fa fa-plus addroombtn" aria-hidden="true"  onClick="addEmpInfo();"></i>					</div>
-					</div>
-					</div>
-					<?php 
-					 } 
-					?> 
-					<input name="empcount" type="hidden" id="empcount" value="<?php if($empno==1){ echo '1'; } else { echo $empno-1; } ?>" />
-					<input name="totalpax" type="hidden" id="totalpax" value="<?php if($_REQUEST['totalpax']==''){ echo '1'; } else { echo $_REQUEST['totalpax']; } ?>" />
-					 
-		 
-					 
-					<div class="form-group"  id="loademployee">					</div>
-                    </div></td>
-
-        <td width="15%" align="left" valign="top">
-	<div class="lable" id="travellable">Hotel&nbsp;Category</div>
-	<input type="text" id="starcategory"  name="starcategory"  class="textfield"  value="<?php echo trim($starcategory); ?>" autocomplete="nope" readonly="readonly" onClick="$('#basicDropdownClickstar').show();"  >
-	
-	<input type="submit" name="Submit" value="SEARCH" class="redbuttonsearch mobileshow">
-	
-	<div id="basicDropdownClickstar" class="dropdown-menu dropdown-unfold col-11 m-0" aria-labelledby="basicDropdownClickInvoker"  >
-                   <div class=" "  style="margin-bottom: 10px; width:100%; position:relative;">
-					  <strong>Star Category</strong> <i class="fa fa-times" aria-hidden="true" style="position: absolute; right: 0px; cursor: pointer; top: 4px; font-size: 16px; color: #000;" onClick="$('#basicDropdownClickstar').hide();"></i>
-			    </div>
-					  
-				  <table width="100%" border="0" cellpadding="0" cellspacing="0" style="font-size:13px;">
-  <tr>
-    <td><label><input name="category[]" type="checkbox" value="1" style="width: 20px; height: 16px; float: left; margin-right: 3px;"  onclick="combinecheckbox()"  <?php if(strpos($category, '1') !== false){ ?> checked="checked" <?php } ?> /> 1 Star</label></td>
-    </tr>
-  <tr>
-    <td><label><input name="category[]" type="checkbox" value="2" style="width: 20px; height: 16px; float: left; margin-right: 3px;" onClick="combinecheckbox()"  <?php if(strpos($category, '2') !== false){ ?> checked="checked" <?php } ?> /> 2 Star</label></td>
-    </tr>
-  <tr>
-    <td><label><input name="category[]" type="checkbox" value="3"  style="width: 20px; height: 16px; float: left; margin-right: 3px;"  onclick="combinecheckbox()" <?php if($category=='' || strpos($category, '3') !== false){ ?> checked="checked" <?php } ?> /> 3 Star</label></td>
-    </tr>
-  <tr>
-    <td><label><input name="category[]" type="checkbox" value="4"  style="width: 20px; height: 16px; float: left; margin-right: 3px;"  onclick="combinecheckbox()"  <?php if($category=='' || strpos($category, '4') !== false){ ?> checked="checked" <?php } ?> /> 4 Star</label></td>
-    </tr>
-  <tr>
-    <td><label><input name="category[]" type="checkbox" value="5"  style="width: 20px; height: 16px; float: left; margin-right: 3px;"  onclick="combinecheckbox()"  <?php if(strpos($category, '5') !== false){ ?> checked="checked" <?php } ?>/> 5 Star</label></td>
-    </tr>
-</table>
-
-					 
-              </div>
-	</td>
-	</label>
-
-        
-        </tr>
-    </tbody>
-</table>
-</div>
-     
 
 
-    
-    
-    <div class="flightsearchbtn hotelsearchbtn"><input type="submit" name="Submit" value="Search Hotels" class="redbuttonsearch hotelseachbtn"></div>
-    
-    <input type="hidden" name="action" value="flightpostaction" >
-<input type="hidden" name="changesearch" id="changesearch" value="0" >
-</form>
-  </div>
+    <?php include "header.php"; ?>
+
+    <div class="top_bg_ofr_sb top_bg_ofr_sb2other homeflightsearchouterbox hotelmainbg" style="margin-bottom: 90px;padding: 50px 0px;">
+
+
+
+
+
+        <div class="container mobilecontainer" style="padding:0px 20px;">
+
+            <div class="flightsearchwihite hotelsearchwhite">
+
+
+
+                <script>
+                    $(document).mouseup(function(e)
+
+                        {
+
+                            var container = $("#fromflightdestination");
+
+                            if (!container.is(e.target) && container.has(e.target).length === 0)
+
+                            {
+
+                                $('#searchcitylistsfromCity').hide();
+
+                            } else {
+
+
+
+                                $('#searchcitylistsfromCity2').hide();
+
+                            }
+
+
+
+                            var container = $("#toflightdestination");
+
+                            if (!container.is(e.target) && container.has(e.target).length === 0)
+
+                            {
+
+                                $('#searchcitylistsfromCity2').hide();
+
+                            } else {
+
+
+
+                                $('#searchcitylistsfromCity').hide();
+
+                            }
+
+                        });
+                </script>
+
+                <div class="searchboxouter flightsearchhomebox hotelboxouter">
+
+                    <form method="post" id="hotelSearch" onSubmit="hotelSearch(event)">
+                        <input type="hidden" name="hotel-list" value='1'>
+
+                        <div class="tableborder hoteltableborder">
+
+                            <table width="100%" border="0" cellpadding="0" cellspacing="0">
+
+                                <tbody>
+                                    <tr>
+
+                                        <td width="20%" align="left" valign="top" id="fromflightdestination">
+
+                                            <div style="height:0px; font-size:0px; position:relative; width: 100%; text-align: left;" id="searchcitylistsfromCity3"></div>
+
+                                            <div class="lable" id="fromlabel"><span class="cityspan">Enter city name,</span> Location</div>
+
+                                            <label>
+
+                                                <div style="height: 0px; font-size: 0px; position: relative; width: 100%; text-align: left; display: none;" id="searchcitylistsfromCity"></div>
+
+                                                <input type="text" class="textfield" requered="" onKeyUp="getSearchHotel(event)" name="searchDestination" autocomplete="nope" value="">
+
+                                                <input type="hidden" name="hotel_codes" value="">
+                                            </label>
+
+                                            <div class="swapbtn hotelswapbtn" onClick="swapdata();"><i class="fa fa-exchange" aria-hidden="true"></i></div>
+                                        </td>
+
+                                        <td width="18%" align="left" valign="top" class="form-group">
+                                            <label>
+                                                <div class="lable">CHECK IN</div>
+                                            </label>
+                                            <div style="margin: 11px 0px;">
+                                                <input type="date" name="checkInDate" class="form-control" style="border: none !important;" onChange="validateCheckOut(this.value)">
+                                            </div>
+                                        </td>
+
+                                        <td width="18%" align="left" valign="top" class="form-group">
+
+                                            <label>
+                                                <div class="lable">CHECK OUT</div>
+                                            </label>
+                                            <div style="margin: 11px 0px;">
+                                                <input type="date" name="checkOutDate" class="form-control" style="border: none !important;">
+                                            </div>
+                                        </td>
+
+
+
+                                        <td width="20%" align="left" valign="top">
+
+                                            <div class="lable" id="roomAndGuest" onclick="$('#basicDropdownClick').show()">Rooms &amp; Guests</div>
+                                            <input type="text" name="travellers" class="textfield" value="1 Room - 1 Guest" autocomplete="nope" readonly="readonly" onclick="$('#basicDropdownClick').show();">
+                                            <div id="basicDropdownClick" class="dropdown-menu dropdown-unfold col-11 m-0" aria-labelledby="basicDropdownClickInvoker" style="width: max-content; padding: 10px; right: 0px; display: none;">
+                                                <div class=" " style="margin-bottom: 10px; width:100%; position:relative;">
+                                                    <strong>Guests</strong> <i class="fa fa-times" aria-hidden="true" style="position: absolute; right: 0px; cursor: pointer; top: 4px; font-size: 16px; color: #000;" onclick="$('#basicDropdownClick').hide();"></i>
+                                                </div>
+                                                <div class="row" style="margin-right: 0px; margin-left: 1px;" id="addGuest<?php static $i = 1;
+                                                                                                                            echo $i; ?>">
+                                                    <div class="roomguestblockdiv">
+                                                        <div class="form-group">
+                                                            <div style="font-weight: 500; margin-top:27px;" class="romonecalendar">Room - <?php echo $i; ?></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="roomguestblockdiv">
+                                                        <div class="form-group"> <label>Adult</label>
+                                                            <select class="form-control select2 pax" name="adults">
+                                                                <option value="1" selected>1 Adult</option>
+                                                                <option value="2">2 Adults</option>
+                                                                <option value="3">3 Adults</option>
+                                                                <option value="4">4 Adults</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="roomguestblockdiv">
+                                                        <div class="form-group"><label>Child</label>
+                                                            <select class="form-control select2 pax" name="childs" onchange="childAge(this.value,<?php echo $i; ?>)">
+                                                                <option value="0" selected="selected">0 Child</option>
+                                                                <option value="1">1 Child</option>
+                                                                <option value="2">2 Childs</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div id="addGuestChilds<?php echo $i; ?>" style="width:auto"></div>
+                                                    <div class="roomguestblockdiv" style="display:flex;justify-content:center;align-items:center;">
+                                                        <div class="form-group">
+                                                            <i class="fa fa-plus" aria-hidden="true" style="margin-top: 29px; cursor: pointer; background-color: #000; padding: 6px 8px; color: #fff; border-radius: 2px; font-size: 12px;margin-left: 2px;" onclick="addGuest();"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                        </td>
+
+
+
+                                        <td width="15%" align="left" valign="top">
+
+                                            <div class="lable" id="travellable">Hotel&nbsp;Category</div>
+
+                                            <input type="text" id="starcategory" class="textfield" value="3,4 star" autocomplete="nope" readonly="readonly" onClick="$('#basicDropdownClickstar').show();">
+
+                                            <input type="submit" name="Submit" value="SEARCH" class="redbuttonsearch mobileshow">
+                                            <div id="basicDropdownClickstar" class="dropdown-menu dropdown-unfold col-11 m-0" aria-labelledby="basicDropdownClickInvoker">
+                                                <div class=" " style="margin-bottom: 10px; width:100%; position:relative;">
+                                                    <strong>Star Category</strong> <i class="fa fa-times" aria-hidden="true" style="position: absolute; right: 0px; cursor: pointer; top: 4px; font-size: 16px; color: #000;" onClick="$('#basicDropdownClickstar').hide();"></i>
+                                                </div>
+                                                <table width="100%" border="0" cellpadding="0" cellspacing="0" style="font-size:13px;">
+                                                    <tr>
+                                                        <td><label><input name="category" type="checkbox" value="3" style="width: 20px; height: 16px; float: left; margin-right: 3px;" checked /> 3 Star</label></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><label><input name="category" type="checkbox" value="4" style="width: 20px; height: 16px; float: left; margin-right: 3px;" checked /> 4 Star</label></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><label><input name="category" type="checkbox" value="5" style="width: 20px; height: 16px; float: left; margin-right: 3px;" /> 5 Star</label></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><label><input name="category" type="checkbox" value="6" style="width: 20px; height: 16px; float: left; margin-right: 3px;" /> 6 Star</label></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><label><input name="category" type="checkbox" value="7" style="width: 20px; height: 16px; float: left; margin-right: 3px;" /> 7 Star</label></td>
+                                                    </tr>
+                                                </table>
+
+                                            </div>
+
+                                        </td>
+
+                                        </label>
+
+
+
+
+
+                                    </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                        <div class="flightsearchbtn hotelsearchbtn">
+                            <button type="submit" name="Submit" class="redbuttonsearch hotelseachbtn" id="addLoading">Search Hotels</button>
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
+
+
+
+
+
+
+
+
+
+    <div class="top_bg_ofr_sb" style="display:none;">
+
+        <div class="container" style="padding:0px 60px;">
+
+            <div class="searchtabs">
+
+                <a <?php if ($_REQUEST['tripType'] == 1) { ?>class="active" <?php } ?> id="tb1" onClick="selecttb(1);">One-Way</a>
+
+                <a <?php if ($_REQUEST['tripType'] == 2) { ?>class="active" <?php } ?> id="tb2" onClick="selecttb(2);">Round-Trip</a>
+            </div>
+
+
+
+        </div>
+
     </div>
-    </div>
- 
- 
 
-
-<div class="top_bg_ofr_sb" style="display:none;" >
-<div class="container"  style="padding:0px 60px;"> 
-<div class="searchtabs">
-<a <?php if($_REQUEST['tripType']==1){ ?>class="active"<?php } ?>  id="tb1" onClick="selecttb(1);">One-Way</a>
-<a <?php if($_REQUEST['tripType']==2){ ?>class="active"<?php } ?> id="tb2" onClick="selecttb(2);">Round-Trip</a></div>
-
-<div class="searchboxouter">
- <form  method="GET" id="formids" action="<?php echo $fullurl; ?>flight-search" >
-                <input type="hidden" name="tripType" id="tripType" value="<?php echo $tripType; ?>">
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
-  <tr>
-    <td width="20%" align="left" valign="top">  
-	<div style="height:0px; font-size:0px; position:relative; width: 100%; text-align: left;" id="searchcitylistsfromCity"></div>
-	  <input type="text" onClick="$('#pickupCitySearchfromCity').select();" class="textfield" requered="" onKeyUp="getflightSearchCIty('pickupCitySearchfromCity','fromDestinationFlight','searchcitylistsfromCity');" id="pickupCitySearchfromCity" name="fromcitydesti" value="<?php echo $fromcitydesti; ?>" autocomplete="off">
-	  <input name="fromDestinationFlight" id="fromDestinationFlight" type="hidden" value="<?php echo $fromDestinationFlight; ?>" autocomplete="nope">
-	  <div class="swapbtn" onClick="swapdata();"><i class="fa fa-exchange" aria-hidden="true"></i></div>
-     </td> 
-    <td width="20%" align="left" valign="top" >
-	<div style="height:0px; font-size:0px; position:relative; width: 100%; text-align: left;" id="searchcitylistsfromCity2"></div>
-	<input type="text" onClick="$('#pickupCitySearchfromCity2').select();" class="textfield" requered="" onKeyUp="getflightSearchCIty('pickupCitySearchfromCity2','fromDestinationFlight2','searchcitylistsfromCity2');" id="pickupCitySearchfromCity2" name="tocitydesti" value="<?php echo $tocitydesti; ?>" autocomplete="off" >
-	<input name="toDestinationFlight" id="fromDestinationFlight2" type="hidden" value="<?php echo $toDestinationFlight; ?>" autocomplete="nope">
-	</td>
-    <td width="12%" align="left" valign="top"><input type="text" id="dt1" name="journeyDateOne" class="textfield"  value="<?php echo trim($journeyDateOne); ?>" autocomplete="off"  ><i class="fa fa-calendar" aria-hidden="true"></i></td>
-    <td width="12%" align="left" valign="top"  onclick="selecttb(2);"><input type="text" id="dt2" name="journeyDateRound" class="textfield"  value="<?php echo trim($journeyDateRound); ?>" autocomplete="off" <?php if($tripType==1){ ?>disabled  style="color:#fafafa;" <?php } ?> <?php if($_REQUEST['tripType']==1){ ?>disabled="disabled"<?php } ?>  ><i class="fa fa-calendar" aria-hidden="true"></i></td>
-    <td width="24%" align="left" valign="top">
-	
-	<input type="text" id="travellersshow"  name="travellersshow"  class="textfield"  value="<?php echo trim($travellers); ?>" autocomplete="off" readonly="readonly" onClick="$('#basicDropdownClick').show();"  >
-							
-							
-							  <script>
-  $('#basicDropdownClick').click(function(event){
-  event.stopPropagation();
-});
-  </script>
- 
- <div id="basicDropdownClick" class="dropdown-menu dropdown-unfold col-11 m-0" aria-labelledby="basicDropdownClickInvoker" style="max-width: 300px; width: 250px;">
-                   
-					  
-					  <div class=" "  style="margin-bottom: 10px;">
-					  
-					  
-					  
-                        <div class="js-quantity mx-3 row align-items-center justify-content-between">
-						   <div class=" "  style="margin-bottom: 10px; width:100%; position:relative;">
-					  <strong>Travellers</strong> <i class="fa fa-times" aria-hidden="true" style="position: absolute; right: 0px; cursor: pointer; top: 4px; font-size: 16px; color: #000;" onClick="$('#basicDropdownClick').hide();"></i>
-					  </div>
-						
-						 <span class="d-block font-size-16 text-secondary font-weight-medium">Adults (12y +)</span>
-                          <div class="d-flex">
-                            <select id="ADT" name="ADT" class="form-control" onChange="selectpaxs();">
-                              <option value="1" <?php echo ($ADT == 1 ? 'selected':''); ?>>1</option>
-                              <option value="2" <?php echo ($ADT == 2 ? 'selected':''); ?>>2</option>
-                              <option value="3" <?php echo ($ADT == 3 ? 'selected':''); ?>>3</option>
-                              <option value="4" <?php echo ($ADT == 4 ? 'selected':''); ?>>4</option>
-                              <option value="5" <?php echo ($ADT == 5 ? 'selected':''); ?>>5</option>
-                              <option value="6" <?php echo ($ADT == 6 ? 'selected':''); ?>>6</option>
-                              <option value="7" <?php echo ($ADT == 7 ? 'selected':''); ?>>7</option>
-                              <option value="8" <?php echo ($ADT == 8 ? 'selected':''); ?>>8</option>
-                              <option value="9" <?php echo ($ADT == 9 ? 'selected':''); ?>>9</option>
-                            </select>
-                          </div>
-                        </div>
-                      </div>
-                      <div class=""  style="margin-bottom: 10px;">
-                        <div class="js-quantity mx-3 row align-items-center justify-content-between"> <span class="d-block font-size-16 text-secondary font-weight-medium">Children (2y - 12y )</span>
-                          <div class="d-flex">
-                            <select id="CHD" name="CHD" class="form-control" onChange="selectpaxs();">
-                              <option value="0" <?php echo ($CHD == 0 ? 'selected':''); ?>>0</option>
-                              <option value="1" <?php echo ($CHD == 1 ? 'selected':''); ?>>1</option>
-                              <option value="2" <?php echo ($CHD == 2 ? 'selected':''); ?>>2</option>
-                              <option value="3" <?php echo ($CHD == 3 ? 'selected':''); ?>>3</option>
-                              <option value="4" <?php echo ($CHD == 4 ? 'selected':''); ?>>4</option>
-                              <option value="5" <?php echo ($CHD == 5 ? 'selected':''); ?>>5</option>
-                              <option value="6" <?php echo ($CHD == 6 ? 'selected':''); ?>>6</option>
-                            </select>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="" style="margin-bottom: 10px;">
-                        <div class="js-quantity mx-3 row align-items-center justify-content-between"> <span class="d-block font-size-16 text-secondary font-weight-medium">Infants (below 2y)</span>
-                          <div class="d-flex">
-                            <select id="INF" name="INF" class="form-control" onChange="selectpaxs();">
-                              <option value="0" <?php echo ($INF == 0 ? 'selected':''); ?>>0</option>
-                              <option value="1" <?php echo ($INF == 1 ? 'selected':''); ?>>1</option>
-                              <option value="2" <?php echo ($INF == 2 ? 'selected':''); ?>>2</option>
-                              <option value="3" <?php echo ($INF == 3 ? 'selected':''); ?>>3</option>
-                              <option value="4" <?php echo ($INF == 4 ? 'selected':''); ?>>4</option>
-                              <option value="5" <?php echo ($INF == 5 ? 'selected':''); ?>>5</option>
-                              <option value="6" <?php echo ($INF == 6 ? 'selected':''); ?>>6</option>
-                            </select>
-                          </div>
-                        </div>
-                      </div>
-					  
-					  
-					  
-					  <div class="" style="margin-bottom: 10px;">
-                        <div class="js-quantity mx-3 row align-items-center justify-content-between"> <span class="d-block font-size-16 text-secondary font-weight-medium">Preffered Class</span>
-                          <div class="d-flex">
-                            <select id="PC" name="PC" class="form-control" onChange="selectpaxs();" > 
-                              <option value="EC" <?php if($PC=='EC'){ echo 'selected'; }?>>Economy Class</option>
-                              <option value="BU" <?php if($PC=='BU'){ echo 'selected'; }?>>Business Class</option>
-                            </select>
-                          </div>
-                        </div>
-                      </div>
-					  <script>
-							function selectpaxs(){
-							var ADT = Number($('#ADT').val());
-							var CHD = Number($('#CHD').val());
-							var INF = Number($('#INF').val());
-							var PC = $('#PC').val();
-							
-							if(PC=='EC'){
-							fPC='Economy';
-							}
-							if(PC=='BU'){
-							fPC='Business';
-							}
-							if(PC==''){
-							fPC='All Class';
-							}
-							
-							$('#travellersshow').val(Number(ADT+CHD+INF)+' Pax, '+fPC); 
-							}
-							</script>
-					  
-                       
-                       <script>
-					   selectpaxs();
-					   </script>
+    <div class="container" style="margin-top:20px; margin-bottom:20px;">
+        <div class="row" style="display:none;" id="hotelFilterList">
+            <div class="col-lg-3 filtersidebar hotelfilter">
+                <div class="card">
+                    <div class="card-header"> Enter Hotel Name, Location </div>
+                    <div class="card-body">
+                        <input type="text" id="search" class="form-control" placeholder="Enter Keyword">
                     </div>
-	
-	</td>
-     
-    <td width="12%" align="left" valign="top"><input type="submit" name="Submit" value="SEARCH" class="redbuttonsearch"></td>
-  </tr>
-</table>
-
-<input type="hidden" name="action" value="flightpostaction" >
-<input type="hidden" name="changesearch" id="changesearch" value="0" >
-</form>
-
-</div>
-
-</div>
-</div>
-
- 
- 
-
- 
-
-<div class="container" style="margin-top:20px; margin-bottom:20px;"> 
-<div class="row" id="loadallhotels">
-
-<div class="col-3 filtersidebar ">
-
- 
-<div class="card-body flightloadingshadow">
-
-<div class="row">
-
- 
-
-
-<div class="col-12">
-<div class="shbox6"></div>
-<div class="shbox7"></div>
-
-
-<div class="shbox6"></div>
-<div class="shbox7"></div>
-
-
-<div class="shbox6"></div>
-<div class="shbox7"></div>
-
-</div>
-
- 
-
-
- 
-
-</div>
-
-</div>
- 
-
- 
-
- 
-</div>
-
-
-<div class="col-9 cardresult">
-<div id="flightresult" class="listouter">
- 
-<div class="card bookrow">
-
-<div class="card-body flightloadingshadow">
-
-<div class="row">
-
-<div class="col-3">
-
-<div class="row">
-<div class="col-12">
-  <div class="shbox1" style="width: 100%; height: 160px;"></div> 
-
-</div>
-
- 
-</div> 
-
-
-  
- 
- 
- 
- 
-</div>
-
-
-<div class="col-6">
-<div class="shbox6"></div>
-<div class="shbox7"></div>
-
-
-<div class="shbox6"></div>
-<div class="shbox7"></div>
-
-
-<div class="shbox6"></div>
-<div class="shbox7"></div>
-
-</div>
-
-<div class="col-3">
-<div class="shbox8"></div>
-</div>
-
-
- 
-
-</div>
-
-</div>
-
-
-
-</div>
-<div class="card bookrow">
-
-<div class="card-body flightloadingshadow">
-
-<div class="row">
-
-<div class="col-3">
-
-<div class="row">
-<div class="col-12">
-  <div class="shbox1" style="width: 100%; height: 160px;"></div> 
-
-</div>
-
- 
-</div> 
-
-
-  
- 
- 
- 
- 
-</div>
-
-
-<div class="col-6">
-<div class="shbox6"></div>
-<div class="shbox7"></div>
-
-
-<div class="shbox6"></div>
-<div class="shbox7"></div>
-
-
-<div class="shbox6"></div>
-<div class="shbox7"></div>
-
-</div>
-
-<div class="col-3">
-<div class="shbox8"></div>
-</div>
-
-
- 
-
-</div>
-
-</div>
-
-
-
-</div>
-<div class="card bookrow">
-
-<div class="card-body flightloadingshadow">
-
-<div class="row">
-
-<div class="col-3">
-
-<div class="row">
-<div class="col-12">
-  <div class="shbox1" style="width: 100%; height: 160px;"></div> 
-
-</div>
-
- 
-</div> 
-
-
-  
- 
- 
- 
- 
-</div>
-
-
-<div class="col-6">
-<div class="shbox6"></div>
-<div class="shbox7"></div>
-
-
-<div class="shbox6"></div>
-<div class="shbox7"></div>
-
-
-<div class="shbox6"></div>
-<div class="shbox7"></div>
-
-</div>
-
-<div class="col-3">
-<div class="shbox8"></div>
-</div>
-
-
- 
-
-</div>
-
-</div>
-
-
-
-</div>
-<div class="card bookrow">
-
-<div class="card-body flightloadingshadow">
-
-<div class="row">
-
-<div class="col-3">
-
-<div class="row">
-<div class="col-12">
-  <div class="shbox1" style="width: 100%; height: 160px;"></div> 
-
-</div>
-
- 
-</div> 
-
-
-  
- 
- 
- 
- 
-</div>
-
-
-<div class="col-6">
-<div class="shbox6"></div>
-<div class="shbox7"></div>
-
-
-<div class="shbox6"></div>
-<div class="shbox7"></div>
-
-
-<div class="shbox6"></div>
-<div class="shbox7"></div>
-
-</div>
-
-<div class="col-3">
-<div class="shbox8"></div>
-</div>
-
-
- 
-
-</div>
-
-</div>
-
-
-
-</div>
-<div class="card bookrow">
-
-<div class="card-body flightloadingshadow">
-
-<div class="row">
-
-<div class="col-3">
-
-<div class="row">
-<div class="col-12">
-  <div class="shbox1" style="width: 100%; height: 160px;"></div> 
-
-</div>
-
- 
-</div> 
-
-
-  
- 
- 
- 
- 
-</div>
-
-
-<div class="col-6">
-<div class="shbox6"></div>
-<div class="shbox7"></div>
-
-
-<div class="shbox6"></div>
-<div class="shbox7"></div>
-
-
-<div class="shbox6"></div>
-<div class="shbox7"></div>
-
-</div>
-
-<div class="col-3">
-<div class="shbox8"></div>
-</div>
-
-
- 
-
-</div>
-
-</div>
-
-
-
-</div>
- 
-   
- 
-
-</div>
-
-</div>
- 
-</div>
- </div>
- 
- 
-  <?php 
-$geturl = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-$geturl = str_replace($fullurl,'',$geturl);
-$geturl = str_replace('hotel-search','',$geturl);
-
- 
-$pagesearch='hotel_search_load.php'.$geturl;
-  
-  
- ?>
-  
-
- 
-
-<iframe style="display:none;" src="<?php echo $pagesearch; ?>"></iframe>
-
-<?php include "footer.php"; ?>
-<script>
-$('#loadallhotels').load('<?php echo $pagesearch; ?>');
-</script>
-
-<script>
-function getSearchCityHotel(citysearchfield,cityresultfield,listsearch){
-var citysearchfieldval = encodeURI($('#'+citysearchfield).val());  
-var citysearchfield = citysearchfield;
-
-if(citysearchfieldval!=''){  
-$('#'+listsearch).show();
-$('#'+listsearch).load('searchcitylistshotel.php?keyword='+citysearchfieldval+'&searchcitylists='+listsearch+'&cityresultfield='+cityresultfield+'&citysearchfield='+citysearchfield);
-}
-}
- 
- 
-
-$(document).ready(function () {
-    $("#dt1").datepicker({
-        dateFormat: "dd-mm-yy",
-        minDate: 0,
-        onSelect: function () {
-            var dt2 = $('#dt2');
-            var startDate = $(this).datepicker('getDate');
-            //add 30 days to selected date
-            startDate.setDate(startDate.getDate() + 30);
-            var minDate = $(this).datepicker('getDate');
-            var dt2Date = dt2.datepicker('getDate');
-            //difference in days. 86400 seconds in day, 1000 ms in second
-            var dateDiff = (dt2Date - minDate)/(86400 * 1000);
-
-            //dt2 not set or dt1 date is greater than dt2 date
-            if (dt2Date == null || dateDiff < 0) {
-                    dt2.datepicker('setDate', minDate);
+                    <div class="card-header"> Price Range </div>
+                    <div class="card-body">
+                        <div class="">
+                            <p class="range-value">
+                                <input type="text" id="amountfilter" readonly="" style="border: 0px;">
+                            </p>
+                            <div id="slider-ranges" class="range-bar ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content">
+                                <div class="ui-slider-range ui-corner-all ui-widget-header" style="left: 0%; width: 100%;"></div>
+                                <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default" style="left: 0%;"></span>
+                                <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default" style="left: 100%;"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-header"> Star Rating </div>
+                    <div class="card-body" id="allFilterDiv">
+                        <div class="arranddep">
+                            <label id="1star" style="display:none;">
+                                <input type="checkbox" value="1star" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> 1 Star </label>
+                            <label id="2star" style="display:none;">
+                                <input type="checkbox" value="2star" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> 2 Star </label>
+                            <label id="3star" style="display:none;">
+                                <input type="checkbox" value="3star" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> 3 Star </label>
+                            <label id="4star" style="">
+                                <input type="checkbox" value="4star" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> 4 Star </label>
+                            <label id="5star" style="">
+                                <input type="checkbox" value="5star" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> 5 Star </label>
+                        </div>
+                    </div>
+                    <div class="card-header"> Property Type </div>
+                    <div class="card-body" id="allFilterDiv3">
+                        <div class="arranddep" style="max-height:250px; overflow-y: auto;">
+                            <label id="hoteltypeaparthotel" style="display:none;">
+                                <input type="checkbox" value="hoteltypeaparthotel" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> Aparthotel </label>
+                            <label id="hoteltypeapartment" style="">
+                                <input type="checkbox" value="hoteltypeapartment" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> Apartment </label>
+                            <label id="hoteltypebungalow" style="display:none;">
+                                <input type="checkbox" value="hoteltypebungalow" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> Bungalow </label>
+                            <label id="hoteltypecabin" style="display:none;">
+                                <input type="checkbox" value="hoteltypecabin" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> Cabin </label>
+                            <label id="hoteltypechalet" style="display:none;">
+                                <input type="checkbox" value="hoteltypechalet" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> Chalet </label>
+                            <label id="hoteltypecondo" style="display:none;">
+                                <input type="checkbox" value="hoteltypecondo" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> Condo </label>
+                            <label id="hoteltypecottage" style="display:none;">
+                                <input type="checkbox" value="hoteltypecottage" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> Cottage </label>
+                            <label id="hoteltypeentire-apartment" style="display:none;">
+                                <input type="checkbox" value="hoteltypeentire-apartment" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> Entire apartment </label>
+                            <label id="hoteltypefarm-house" style="display:none;">
+                                <input type="checkbox" value="hoteltypefarm-house" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> Farm House </label>
+                            <label id="hoteltypeguest-accommodation" style="display:none;">
+                                <input type="checkbox" value="hoteltypeguest-accommodation" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> Guest Accommodation </label>
+                            <label id="hoteltypeguest-house" style="display:none;">
+                                <input type="checkbox" value="hoteltypeguest-house" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> Guest House </label>
+                            <label id="hoteltypehomes" style="display:none;">
+                                <input type="checkbox" value="hoteltypehomes" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> Homes </label>
+                            <label id="hoteltypehomestay" style="display:none;">
+                                <input type="checkbox" value="hoteltypehomestay" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> Homestay </label>
+                            <label id="hoteltypehomestays" style="display:none;">
+                                <input type="checkbox" value="hoteltypehomestays" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> Homestays </label>
+                            <label id="hoteltypehostel" style="display:none;">
+                                <input type="checkbox" value="hoteltypehostel" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> Hostel </label>
+                            <label id="hoteltypehotel" style="">
+                                <input type="checkbox" value="hoteltypehotel" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> Hotel </label>
+                            <label id="hoteltypehouse" style="">
+                                <input type="checkbox" value="hoteltypehouse" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> House </label>
+                            <label id="hoteltypeinn" style="">
+                                <input type="checkbox" value="hoteltypeinn" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> Inn </label>
+                            <label id="hoteltypelodge" style="display:none;">
+                                <input type="checkbox" value="hoteltypelodge" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> Lodge </label>
+                            <label id="hoteltypelove-hotel" style="display:none;">
+                                <input type="checkbox" value="hoteltypelove-hotel" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> Love hotel </label>
+                            <label id="hoteltypemotel" style="display:none;">
+                                <input type="checkbox" value="hoteltypemotel" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> Motel </label>
+                            <label id="hoteltypeoyo-rooms" style="display:none;">
+                                <input type="checkbox" value="hoteltypeoyo-rooms" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> Oyo Rooms </label>
+                            <label id="hoteltypeoyoxdesign" style="display:none;">
+                                <input type="checkbox" value="hoteltypeoyoxdesign" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> OYOxDesign </label>
+                            <label id="hoteltypepalace" style="">
+                                <input type="checkbox" value="hoteltypepalace" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> Palace </label>
+                            <label id="hoteltypepalette" style="display:none;">
+                                <input type="checkbox" value="hoteltypepalette" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> Palette </label>
+                            <label id="hoteltypepremium" style="display:none;">
+                                <input type="checkbox" value="hoteltypepremium" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> Premium </label>
+                            <label id="hoteltyperesidence" style="display:none;">
+                                <input type="checkbox" value="hoteltyperesidence" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> Residence </label>
+                            <label id="hoteltyperesort" style="">
+                                <input type="checkbox" value="hoteltyperesort" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> Resort </label>
+                            <label id="hoteltyperiad" style="display:none;">
+                                <input type="checkbox" value="hoteltyperiad" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> Riad </label>
+                            <label id="hoteltypeserviced-apartment" style="display:none;">
+                                <input type="checkbox" value="hoteltypeserviced-apartment" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> Serviced apartment </label>
+                            <label id="hoteltypesilverkey" style="display:none;">
+                                <input type="checkbox" value="hoteltypesilverkey" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> Silverkey </label>
+                            <label id="hoteltypetourist" style="display:none;">
+                                <input type="checkbox" value="hoteltypetourist" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> Tourist </label>
+                            <label id="hoteltypevillas" style="display:none;">
+                                <input type="checkbox" value="hoteltypevillas" style="width: 20px; height: 16px; float: left; margin-right: 3px;"> Villas </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-9" id="hotelResult"></div>
+        </div>
+        <div class="row offerrow" id="hotelOffer">
+            <div class="offerheading">
+                <h3>Exclusive Hotels Deals</h3>
+            </div>
+            <div class="col-lg-3">
+                <div class="offersection">
+                    <a onclick="loadpop('Deal Details',this,'700px')" data-toggle="modal" data-target=".bs-example-modal-center" popaction="action=viewdetails&amp;id=202565583" style="cursor:pointer;">
+                        <div class="offerimg">
+                            <img src="https://ofc.travbox.travel/upload/16770098992067123421675195499.jpg" alt="Enjoy Assured Stays in Clean Rooms with AC, TV &amp; Free Wi-Fi">
+                        </div>
+                    </a>
+
+                    <h4 class="mt-2">Enjoy Assured Stays in Clean Rooms with AC, TV &amp; Free Wi-Fi</h4>
+
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="offersection">
+                    <a onclick="loadpop('Deal Details',this,'700px')" data-toggle="modal" data-target=".bs-example-modal-center" popaction="action=viewdetails&amp;id=202565580" style="cursor:pointer;">
+                        <div class="offerimg">
+                            <img src="https://ofc.travbox.travel/upload/16770094202512181651675195020.jpg" alt="Grab Up to Rs. 8000 OFF* on International Hotels.">
+                        </div>
+                    </a>
+
+                    <h4 class="mt-2">Grab Up to Rs. 8000 OFF* on International Hotels.</h4>
+
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="offersection">
+                    <a onclick="loadpop('Deal Details',this,'700px')" data-toggle="modal" data-target=".bs-example-modal-center" popaction="action=viewdetails&amp;id=202565579" style="cursor:pointer;">
+                        <div class="offerimg">
+                            <img src="https://ofc.travbox.travel/upload/16770093952702588181675194995.webp" alt="Get up to 15% instant discount*">
+                        </div>
+                    </a>
+
+                    <h4 class="mt-2">Get up to 15% instant discount*</h4>
+
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="offersection">
+                    <a onclick="loadpop('Deal Details',this,'700px')" data-toggle="modal" data-target=".bs-example-modal-center" popaction="action=viewdetails&amp;id=202565584" style="cursor:pointer;">
+                        <div class="offerimg">
+                            <img src="https://ofc.travbox.travel/upload/16770099301543219401675195530.jpeg" alt="Book your Stay for a minimum 3 nights and pay for just 2!">
+                        </div>
+                    </a>
+
+                    <h4 class="mt-2">Book your Stay for a minimum 3 nights and pay for just 2!</h4>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php include "footer.php"; ?>
+
+
+    <script>
+        const today = new Date().toISOString().split('T')[0];
+        $("input[name='checkInDate']").val(today);
+
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1); // Using 'tomorrow' instead of 'today' here
+        const tomorrowFormatted = tomorrow.toISOString().split('T')[0];
+        $("input[name='checkOutDate']").val(tomorrowFormatted);
+
+        const checkboxes = document.querySelectorAll('input[name="category"]');
+        const starCategoryInput = $("#starcategory");
+
+        checkboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                const checkedCheckboxes = document.querySelectorAll('input[name="category"]:checked');
+
+                if (checkedCheckboxes.length > 2) {
+                    this.checked = false; // Uncheck the current checkbox
+                }
+
+                if (checkedCheckboxes.length <= 2) {
+                    const starCategoryString = Array.from(checkedCheckboxes)
+                        .map(checkbox => checkbox.value)
+                        .join(', ') + ' Star';
+
+                    starCategoryInput.val(starCategoryString);
+                }
+            });
+        });
+
+
+
+        function childAge(value, childId) {
+            $(`#addGuestChilds${childId}`).empty();
+            var html = ``;
+            // console.log(childId);
+            for (var i = 0; i < value; i++) {
+                html += `<div class="roomguestblockdiv">
+					<div class="form-group">${ childId == 1 ? '<label>Child Age</label>' : '<label></label>'}  
+					<select class="form-control" name="age"> 
+						<option value="0">0</option>
+						<option value="1">1</option>
+						<option value="2">2</option> 
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+						<option value="6">6</option>
+						<option value="7">7</option>
+						<option value="8">8</option>
+						<option value="9">9</option>
+						<option value="10">10</option>
+						<option value="11">11</option>
+					</select> 
+					</div>
+					</div>`;
             }
-            //dt1 date is 30 days under dt2 date
-            else if (dateDiff > 30){
-                    dt2.datepicker('setDate', startDate);
+            $(`#addGuestChilds${childId}`).append(html);
+        }
+        var guestId = 1;
+
+        function addGuest() {
+            guestId++;
+            var html = `
+        <div class="row" style="margin-right: 0px; margin-left: 1px;" id="addGuest${guestId}">
+            <div class="roomguestblockdiv">
+				<div class="form-group">   
+					<div style="font-weight: 500; margin-top:27px;" class="romonecalendar">Room - ${guestId}</div>
+				</div>
+			</div>
+            <div class="roomguestblockdiv">
+                <div class="form-group">
+                <label></label>
+                    <select class="form-control select2 pax" name="adults">
+                        <option value="1" selected>1 Adult</option>
+                        <option value="2">2 Adults</option>
+                        <option value="3">3 Adults</option>
+                        <option value="4">4 Adults</option>
+                    </select>
+                </div>
+            </div>
+            <div class="roomguestblockdiv">
+                <div class="form-group">
+                <label></label>
+                    <select class="form-control select2 pax" name="childs" onchange="childAge(this.value, ${guestId})">
+                        <option value="0" selected="selected">0 Child</option>
+                        <option value="1">1 Child</option>
+                        <option value="2">2 Childs</option>
+                    </select>
+                </div>
+            </div>
+            <div id="addGuestChilds${guestId}" style="width:auto"></div>
+            <div class="roomguestblockdiv" style="display:flex;justify-content:center;align-items:center;">
+                <div class="form-group">
+                    <i class="fa fa-trash" aria-hidden="true" style="margin-top:6px; cursor: pointer; background-color: #f1646c; padding: 6px 8px; color: #fff; border-radius: 2px; font-size: 12px; margin-left: 2px;" onclick="removeGuest(${guestId});"></i>
+                </div>
+            </div>
+        </div>`;
+            $("#basicDropdownClick").append(html);
+        }
+
+
+        function removeGuest(guestId) {
+            $(`#addGuest${guestId}`).remove();
+        }
+
+
+        let timer;
+
+        function debounce(func, delay) {
+            clearTimeout(timer);
+            timer = setTimeout(func, delay);
+        }
+
+        function getSearchHotel(e) {
+            debounce(function() {
+                $.ajax({
+                    url: "test_search_hotel.php",
+                    method: "POST",
+                    dataType: "JSON",
+                    data: {
+                        search_hotel: e.target.value
+                    },
+                    success: function(result) {
+                        let html = `<div class="searchdestinationboxclass">`;
+                        for (let i = 0; i < result.length; i++) {
+                            html += `<div class="list" onClick="setSearchDestination('${result[i].address}',${result[i].hotel_codes})">${result[i].address}<div style="font-size:11px; color:#666666;">${result[i].city_name}</div></div>`;
+                        }
+                        html += `</div>`;
+                        $("#searchcitylistsfromCity3").empty().append(html);
+                    }
+                });
+            }, 300); // Adjust the delay (in milliseconds) as needed
+        }
+
+
+
+        function setSearchDestination(search, hotel_codes) {
+            $("input[name=searchDestination]").val(search);
+            $("input[name=hotel_codes]").val(hotel_codes)
+            $("#searchcitylistsfromCity3").hide();
+        }
+
+        function hotelSearch(event) {
+            event.preventDefault();
+            var checkin = new Date($("input[name=checkInDate]").val());
+            var checkout = new Date($("input[name=checkOutDate]").val());
+            var data = {
+                rates: "comprehensive",
+                currency: "INR",
+                client_nationality: "IN",
+                checkin: formatDateToYearMonthDay(checkin),
+                checkout: formatDateToYearMonthDay(checkout),
+                hotel_category: $("input[name='category']:checked").map(function() {
+                    return $(this).val();
+                }).get(),
+                hotel_codes: [],
+                rooms: []
+            };
+
+            // var hotelCategoryInput = $("input[name=hotel_category]").val();
+            // data.hotel_category = hotelCategoryInput.split(",").map(category => category.trim());
+            data.hotel_codes.push($("input[name=hotel_codes]").val());
+            data.hotel_codes.push("1226107");
+            var adults = $("select[name='adults']").map(function() {
+                return $(this).val();
+            }).get();
+            var childs = $("select[name='childs']").map(function() {
+                return $(this).val();
+            }).get();
+            var childrenAge = $("select[name='age']").map(function() {
+                return $(this).val();
+            }).get();
+            for (var i = 0; i < adults.length; i++) {
+                data.rooms.push({
+                    adults: adults[i],
+                    children_ages: childrenAge.splice(0, childs[i])
+                });
             }
-            //sets dt2 maxDate to the last day of 30 days window
-            dt2.datepicker('option', 'maxDate', startDate);
-            //first day which can be selected in dt2 is selected date in dt1
-            dt2.datepicker('option', 'minDate', minDate);
+            //console.log(JSON.stringify(data));
+
+            $.ajax({
+                url: 'test_search_hotel.php',
+                method: 'POST',
+                data: {
+                    'data': data,
+                    'hotel-list': 1
+                }, // Use an object to send the data
+                dataType: 'JSON',
+                beforeSend: function() {
+                    $("#addLoading").html(`<span class="spinner-border spinner-border-sm"></span>
+                    Loading..`)
+                },
+                success: function(data) {
+                    $("#hotelFilterList").show();
+                    var guest = data.no_of_children != undefined ? data.no_of_children : 0;
+                    // console.log(data.no_of_children);
+                    renderHotelResults(data.hotels, data.search_id);
+                    $("input[name=travellers]").val(`${data.no_of_rooms} Rooms - ${data.no_of_adults + guest} Guests`)
+                    $("#addLoading").html(`Search Hotels`);
+
+                }
+            });
         }
-    });
-    $('#dt2').datepicker({
-        dateFormat: "dd-mm-yy",
-        minDate: 0,onSelect: function () { 
+
+
+        function renderHotelResults(hotels, search_id) {
+            var hotelElements = [];
+            var hotelElement = `<h1 class="hotelseachheading" style="position:relative;">Showing Hotels in Delhi <select name="filterbyprice" id="filterbyprice" onchange="getSortedPrice();" style="position: absolute; right: 0px; font-size: 13px; font-weight: 700; padding: 5px; border: 1px solid #ddd; border-radius: 5px; outline: 0px;">
+
+<option value="1" selected="selected">Price Low to High</option>
+
+<option value="2">Price High to Low</option>
+
+</select></h1>`;
+            for (var i = 0; i < hotels.length; i++) {
+                var hotel = hotels[i];
+                var facilities = hotel.facilities.split(";");
+                var category = hotels[i].category;
+                var min_price = hotels[i].rates.map(rate => rate.price);
+
+                var facilityItems = facilities.slice(0, 6).map(facility => `<div class="tbl"><i class="fa fa-user-circle-o" aria-hidden="true"></i> ${facility.trim()}</div>`).join('');
+
+                var stars = Array(category).fill('<i class="fa fa-star" aria-hidden="true"></i>').join('');
+
+                hotelElement += `
+                <div class="row bookrow hotelbookrow hotelsearchlist hotelboxx">
+                    <div class="col-lg-9">
+                    <div class="hotelbooking">
+                        <div class="hotelimg">
+                        <img src="${hotel.images.url}" onerror="this.onerror=null;this.src='images/nohotelimage.png';" data-src="https://fastui.cltpstatic.com/image/upload/hotels/places/hotels/cms/3986/3986252/images/image_3986252_5d614046-bd07-4e4e-816d-5fde42379558_tn.jpeg">
+                        </div>
+                        <div class="hoteltext">
+                        <h5>${hotel.name}</h5>
+                        <div class="reviewsection">
+                            <p class="threeblue">HOTEL</p> 
+                            <span class="starcatht">${stars}</span>
+                        </div>
+                        <p class="relocation"><i class="fa fa-map-marker" aria-hidden="true"></i>${hotel.address}</p>
+                        <div class="Deluxe">${facilityItems}</div>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="col-lg-3">
+                    <div class="bookbtn">
+                        <h4>₹${Math.min(...min_price)}</h4>
+                        <div class="blackbox">
+                        <h5>Start From</h5>
+                        </div>
+                        <a href="test-view-hotel.php?searchId=${search_id}&hcode=${hotel.hotel_code}" class="btn btn-danger" style="width:100%;">View Room</a>
+                    </div>
+                    </div>
+                </div>
+                `;
+
+                hotelElements.push(hotelElement);
+            }
+
+            $("#hotelOffer").remove();
+            $("#hotelResult").empty();
+            $("#hotelResult").append(hotelElements.join(''));
         }
-    });
-	
-});
- 
- 
-  
-function gettotalpax(){
-
-var totalpax=0;
-$('.pax').each(function(i, obj) {
-    totalpax=Number(totalpax+Number($(obj).val())); 
-}); 
-$('#totalpax').val(totalpax);
- 
- 
-var empcount = $('#empcount').val(); 
-$('#travellersshow').val(''+empcount+' Room - '+totalpax+' Guest'); 
-}
 
 
 
 
- 
-function addEmpInfo(){
-var empcount = $('#empcount').val();
-
-empcount=Number(empcount)+1;  
-$.get("loadchild.php?id="+empcount, function (data) { 
-$("#loademployee").append(data); 
-}); 
-
-var totalpax = $('#totalpax').val();
-$('#empcount').val(empcount); 
-$('#travellersshow').val(''+empcount+' Room - '+totalpax+' Guest'); 
-}
 
 
 
-function removeEmpInfo(id){
-$('#empInfoId'+id).remove();
-var empcount = $('#empcount').val();
-empcount=Number(empcount)-1;  
-var totalpax = $('#totalpax').val();
-$('#empcount').val(empcount);
-$('#travellersshow').val(''+empcount+' Room - '+totalpax+' Guest');
-}
+        function formatDateToYearMonthDay(date) {
+            const year = date.getFullYear();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
 
 
+        function formatDateToYearMonthDay(date) {
+            const year = date.getFullYear();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month is 0-based, so add 1
+            const day = date.getDate().toString().padStart(2, '0');
 
-function combinecheckbox(){
-var combinecheck ='';
-var output = jQuery.map($(':checkbox[name=category\\[\\]]:checked'), function (n, i) {
-    combinecheck = combinecheck+n.value+',';
-}).join(',');
+            return `${year}-${month}-${day}`;
+        }
 
-$('#starcategory').val(rtrim(combinecheck)+' Star');
-}
+        function validateCheckOut(checkIn) {
+            // Get the elements
+            const checkInDateInput = new Date(checkIn);
+            const checkOutDateInput = $("input[name='checkOutDate']").val();
+            const checkOutDate = new Date(checkOutDateInput);
 
-function rtrim(str){
-    return str.replace(/\s+$/, '');
-}
-</script>
+            // Update the min attribute of check-out date input to the check-in date + 1 day
+            const nextDay = new Date(checkInDateInput);
+            nextDay.setDate(checkInDateInput.getDate() + 1); // Adding one day
+            const nextDayFormatted = nextDay.toISOString().split('T')[0]; // Formatting date to YYYY-MM-DD
+            $("input[name='checkOutDate']").attr('min', nextDayFormatted);
+
+            // If the check-out date is already selected and is before the updated min date, reset it
+            if (checkOutDate < nextDay) {
+                $("input[name='checkOutDate']").val(nextDayFormatted);
+            }
+        }
+    </script>
+
 </body>
+
 </html>

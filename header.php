@@ -116,7 +116,7 @@
    </a>
 
     <!-- <a href="<?php //echo $fullurl; ?>hotels"> -->
-    <a href="test-hotel.php">
+    <a href="hotelsearch.php">
     <!-- <span><i class="fa fa-hotel"></i></span> -->
     <span><img src="images/icon/10.png" width="25"></span>
     <span class="icon_span <?php if($selectedpage=='hotels'){ ?>active<?php } ?>">Hotels</span>

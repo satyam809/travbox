@@ -3,8 +3,6 @@ include './config/database.php';
 
 if (!empty($_POST['search_hotel'])) {
     $search_term = $_POST['search_hotel'];
-
-    // Sanitize input to prevent SQL injection (consider using prepared statements)
     $search_term = mysqli_real_escape_string(db(), $search_term);
 
     $cacheFile = 'cache/' . md5($search_term) . '.json';
