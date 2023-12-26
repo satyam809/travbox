@@ -293,22 +293,7 @@ $agentid = $_SESSION['agentUserid'];
 
 
 
-    <div class="top_bg_ofr_sb" style="display:none;">
-
-        <div class="container" style="padding:0px 60px;">
-
-            <div class="searchtabs">
-
-                <a <?php if ($_REQUEST['tripType'] == 1) { ?>class="active" <?php } ?> id="tb1" onClick="selecttb(1);">One-Way</a>
-
-                <a <?php if ($_REQUEST['tripType'] == 2) { ?>class="active" <?php } ?> id="tb2" onClick="selecttb(2);">Round-Trip</a>
-            </div>
-
-
-
-        </div>
-
-    </div>
+    
 
     <div class="container" style="margin-top:20px; margin-bottom:20px;">
         <div class="row" style="display:none;" id="hotelFilterList">
@@ -639,8 +624,9 @@ $agentid = $_SESSION['agentUserid'];
 
             // var hotelCategoryInput = $("input[name=hotel_category]").val();
             // data.hotel_category = hotelCategoryInput.split(",").map(category => category.trim());
-            data.hotel_codes.push($("input[name=hotel_codes]").val());
-            data.hotel_codes.push("1226107");
+            //data.hotel_codes.push($("input[name=hotel_codes]").val());
+           // const hotel_code_list = ["1226107", "1226007", "1226039", "1226037", "1226021", "1226091", "1226098"];
+            data.hotel_codes.push("1226107", "1226007", "1226039", "1226037", "1226021", "1226091", "1226098");
             var adults = $("select[name='adults']").map(function() {
                 return $(this).val();
             }).get();
@@ -656,7 +642,8 @@ $agentid = $_SESSION['agentUserid'];
                     children_ages: childrenAge.splice(0, childs[i])
                 });
             }
-            //console.log(JSON.stringify(data));
+            // console.log(JSON.stringify(data));
+            // die;
 
             $.ajax({
                 url: 'test_search_hotel.php',
@@ -671,12 +658,13 @@ $agentid = $_SESSION['agentUserid'];
                     Loading..`)
                 },
                 success: function(data) {
+                   console.log(data);
+                   $("#hotelResult").empty();
                     $("#hotelFilterList").show();
                     var guest = data.no_of_children != undefined ? data.no_of_children : 0;
-                    // console.log(data.no_of_children);
-                    renderHotelResults(data.hotels, data.search_id);
                     $("input[name=travellers]").val(`${data.no_of_rooms} Rooms - ${data.no_of_adults + guest} Guests`)
                     $("#addLoading").html(`Search Hotels`);
+                    renderHotelResults(data.hotels, data.search_id);
 
                 }
             });
@@ -687,35 +675,36 @@ $agentid = $_SESSION['agentUserid'];
             var hotelElements = [];
             var hotelElement = `<h1 class="hotelseachheading" style="position:relative;">Showing Hotels in Delhi <select name="filterbyprice" id="filterbyprice" onchange="getSortedPrice();" style="position: absolute; right: 0px; font-size: 13px; font-weight: 700; padding: 5px; border: 1px solid #ddd; border-radius: 5px; outline: 0px;">
 
-<option value="1" selected="selected">Price Low to High</option>
+            <option value="1" selected="selected">Price Low to High</option>
 
-<option value="2">Price High to Low</option>
+            <option value="2">Price High to Low</option>
 
-</select></h1>`;
+            </select></h1>`;
+            var hotelList = "";
             for (var i = 0; i < hotels.length; i++) {
-                var hotel = hotels[i];
-                var facilities = hotel.facilities.split(";");
+                //var hotel = hotels[i];
+                var facilities = hotels[i].facilities.split(";");
                 var category = hotels[i].category;
                 var min_price = hotels[i].rates.map(rate => rate.price);
 
                 var facilityItems = facilities.slice(0, 6).map(facility => `<div class="tbl"><i class="fa fa-user-circle-o" aria-hidden="true"></i> ${facility.trim()}</div>`).join('');
 
-                var stars = Array(category).fill('<i class="fa fa-star" aria-hidden="true"></i>').join('');
+                var stars = Array(Math.round(category)).fill('<i class="fa fa-star" aria-hidden="true"></i>').join('');
 
-                hotelElement += `
+                hotelList += `
                 <div class="row bookrow hotelbookrow hotelsearchlist hotelboxx">
                     <div class="col-lg-9">
                     <div class="hotelbooking">
                         <div class="hotelimg">
-                        <img src="${hotel.images.url}" onerror="this.onerror=null;this.src='images/nohotelimage.png';" data-src="https://fastui.cltpstatic.com/image/upload/hotels/places/hotels/cms/3986/3986252/images/image_3986252_5d614046-bd07-4e4e-816d-5fde42379558_tn.jpeg">
+                        <img src="${hotels[i].images.url}" onerror="this.onerror=null;this.src='images/nohotelimage.png';" data-src="https://fastui.cltpstatic.com/image/upload/hotels/places/hotels/cms/3986/3986252/images/image_3986252_5d614046-bd07-4e4e-816d-5fde42379558_tn.jpeg">
                         </div>
                         <div class="hoteltext">
-                        <h5>${hotel.name}</h5>
+                        <h5>${hotels[i].name}</h5>
                         <div class="reviewsection">
                             <p class="threeblue">HOTEL</p> 
                             <span class="starcatht">${stars}</span>
                         </div>
-                        <p class="relocation"><i class="fa fa-map-marker" aria-hidden="true"></i>${hotel.address}</p>
+                        <p class="relocation"><i class="fa fa-map-marker" aria-hidden="true"></i>${hotels[i].address}</p>
                         <div class="Deluxe">${facilityItems}</div>
                         </div>
                     </div>
@@ -726,18 +715,20 @@ $agentid = $_SESSION['agentUserid'];
                         <div class="blackbox">
                         <h5>Start From</h5>
                         </div>
-                        <a href="test-view-hotel.php?searchId=${search_id}&hcode=${hotel.hotel_code}" class="btn btn-danger" style="width:100%;">View Room</a>
+                        <a href="test-view-hotel.php?searchId=${search_id}&hcode=${hotels[i].hotel_code}" class="btn btn-danger" style="width:100%;">View Room</a>
                     </div>
                     </div>
                 </div>
                 `;
 
-                hotelElements.push(hotelElement);
+                
+                
             }
+            //console.log(hotelElements);
 
             $("#hotelOffer").remove();
-            $("#hotelResult").empty();
-            $("#hotelResult").append(hotelElements.join(''));
+            //console.log(JSON.stringify(hotelElements));
+            $("#hotelResult").append(hotelElements+=hotelList);
         }
 
 

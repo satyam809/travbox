@@ -198,7 +198,7 @@ if (isset($_POST['proceed_to_pay'])) {
 
     $curl = curl_init();
     $_POST['data']['holder'] = $holder;
-    $_POST['data']['booking_name'] = $agentUserId.'-'.date('Y-m-d H:i:s');
+    $_POST['data']['booking_name'] = $agentUserId . '-' . date('Y-m-d H:i:s');
     $payload = json_encode($_POST['data']);
 
     curl_setopt_array($curl, array(
@@ -232,7 +232,7 @@ if (isset($_POST['proceed_to_pay'])) {
             // if ($status === true) {
             //     echo $response;
             // }
-        } else{
+        } else {
             print_r($newResponse);
         }
     }
@@ -249,9 +249,15 @@ function saveBooking($bookingData)
     $data = json_decode($bookingData, true);
     // print_r($data);
     // die;
-    $non_refundable = isset($data['non_refundable']) ? mysqli_real_escape_string($conn,$data['non_refundable']) : '';
-    $sql = "INSERT INTO test_bookings (user_id, booking_id, booking_reference, booking_date, checkin, checkout, currency, client_nationality, hotel_address, category, city_code, city_name, country_code, country_name, hotel_description, latitude, longitude, hotel_code, hotel_name, covid_safe_to_stay, covid_safety_protocol, non_refundable, payment_status, payment_type, status, supports_amendment, supports_cancellation, search_id, total_price)
-        VALUES ('" . $user_id . "', '" . $data['booking_id'] . "', '" . $data['booking_reference'] . "', '" . $data['booking_date'] . "', '" . $data['checkin'] . "', '" . $data['checkout'] . "', '" . $data['currency'] . "', '" . $data['holder']['client_nationality'] . "', '" . $data['hotel']['address'] . "', '" . $data['hotel']['category'] . "', '" . $data['hotel']['city_code'] . "', '" . $data['hotel']['city_name'] . "', '" . $data['hotel']['country_code'] . "', '" . $data['hotel']['country_name'] . "', '" . mysqli_real_escape_string($conn,$data['hotel']['description']) . "', '" . $data['hotel']['geolocation']['latitude'] . "', '" . $data['hotel']['geolocation']['longitude'] . "', '" . $data['hotel']['hotel_code'] . "', '" . $data['hotel']['name'] . "', '" . $data['hotel']['safe2stay']['covid_19_safe_to_stay'] . "', '" . $data['hotel']['safe2stay']['covid_19_safety_protocol'] . "', '" . $non_refundable . "', '" . $data['payment_status'] . "', '" . $data['payment_type'] . "', '" . $data['status'] . "', '" . $data['supports_amendment'] . "', '" . $data['supports_cancellation'] . "', '" . $data['search_id'] . "','" . $data['price']['total'] . "')";
+    $non_refundable = isset($data['non_refundable']) ? mysqli_real_escape_string($conn, $data['non_refundable']) : '';
+    $covid_safe_to_stay = isset($data['hotel']['safe2stay']['covid_19_safe_to_stay']) ? $data['hotel']['safe2stay']['covid_19_safe_to_stay'] : '';
+    $covid_safety_protocol = isset($data['hotel']['safe2stay']['covid_19_safety_protocol']) ? $data['hotel']['safe2stay']['covid_19_safety_protocol'] : '';
+
+    $sql = "INSERT INTO test_bookings (
+    user_id, booking_id, booking_reference, booking_date, checkin, checkout, currency, client_nationality, hotel_address, category, city_code, city_name, country_code, country_name, hotel_description, latitude, longitude, hotel_code, hotel_name, covid_safe_to_stay, covid_safety_protocol, non_refundable, payment_status, payment_type, status, supports_amendment, supports_cancellation, search_id, total_price
+) VALUES (
+    '" . $user_id . "', '" . $data['booking_id'] . "', '" . $data['booking_reference'] . "', '" . $data['booking_date'] . "', '" . $data['checkin'] . "', '" . $data['checkout'] . "', '" . $data['currency'] . "', '" . $data['holder']['client_nationality'] . "', '" . $data['hotel']['address'] . "', '" . $data['hotel']['category'] . "', '" . $data['hotel']['city_code'] . "', '" . $data['hotel']['city_name'] . "', '" . $data['hotel']['country_code'] . "', '" . $data['hotel']['country_name'] . "', '" . mysqli_real_escape_string($conn, $data['hotel']['description']) . "', '" . $data['hotel']['geolocation']['latitude'] . "', '" . $data['hotel']['geolocation']['longitude'] . "', '" . $data['hotel']['hotel_code'] . "', '" . $data['hotel']['name'] . "', '" . $covid_safe_to_stay . "', '" . $covid_safety_protocol . "', '" . $non_refundable . "', '" . $data['payment_status'] . "', '" . $data['payment_type'] . "', '" . $data['status'] . "', '" . $data['supports_amendment'] . "', '" . $data['supports_cancellation'] . "', '" . $data['search_id'] . "','" . $data['price']['total'] . "')";
+
     //echo $sql;
     if ($conn->query($sql) === TRUE) {
         $last_inserted_id = $conn->insert_id;
@@ -318,7 +324,7 @@ function saveBooking($bookingData)
         echo "Error in main booking: " . $conn->error;
     }
 
-   // $conn->close();
+    // $conn->close();
 }
 
 if (!empty($_GET['hotel-invoice'])) {
