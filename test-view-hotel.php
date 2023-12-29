@@ -101,6 +101,32 @@ echo '</pre>';*/
 
 
         </div>
+        <!-- Modal -->
+        <div class="modal fade" id="cancellationPoliciy" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title mt-0" id="poptitle">Cancellation Policy</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="popcontent">
+                        <table width="100%" border="1" cellpadding="5" cellspacing="0" bordercolor="#CCCCCC" style=" font-size:13px; font-weight:600;">
+                            <tbody id="appendCancellation">
+                                <tr>
+                                    <td bgcolor="#F4F4F4"><strong>From Date</strong></td>
+                                    <td bgcolor="#F4F4F4"><strong>To Date</strong></td>
+                                    <td bgcolor="#F4F4F4"><strong>Penalty amount</strong></td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
     </section>
     <?php include "footerinc.php"; ?>
@@ -164,6 +190,7 @@ echo '</pre>';*/
         }
 
         function showHotelRates(data) {
+            console.log(data.hotel.rates);
             hotel_data = data;
             have_to_select = data.no_of_rooms;
             let html = ``;
@@ -183,7 +210,7 @@ echo '</pre>';*/
                         <div class="Premium">
                             <h1>${data.hotel.rates[i].rooms[0].description}</h1>
                             <div class="rebox">
-                                <p style="cursor:pointer;" onclick="loadpop('Cancellation Policy',this,'500px')" data-toggle="modal" data-target=".bs-example-modal-center" popaction="action=cancellationPolicy&amp;hotelid=hsid0355387058-50021346&amp;roomid=107_0_43209466">Cancellation Policy</p>
+                                <p style="cursor:pointer;" data-toggle="modal" data-target="#cancellationPoliciy">Cancellation Policy</p>
                             </div>
                         </div>
                     </td>

@@ -626,7 +626,7 @@ $agentid = $_SESSION['agentUserid'];
             // data.hotel_category = hotelCategoryInput.split(",").map(category => category.trim());
             //data.hotel_codes.push($("input[name=hotel_codes]").val());
            // const hotel_code_list = ["1226107", "1226007", "1226039", "1226037", "1226021", "1226091", "1226098"];
-            data.hotel_codes.push("1226107", "1226007", "1226039", "1226037", "1226021", "1226091", "1226098");
+            data.hotel_codes.push("1848138","1226107", "1226007", "1226039", "1226037", "1226021", "1226091", "1226098");
             var adults = $("select[name='adults']").map(function() {
                 return $(this).val();
             }).get();
