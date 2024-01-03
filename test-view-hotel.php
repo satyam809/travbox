@@ -91,12 +91,12 @@ echo '</pre>';*/
                     <table class="table table-bordered" style="background: white;border-radius: 15px;border-collapse: unset">
                         <thead>
                             <tr>
-                                <th scope="col" style="width:20%" class="text-center">Room</th>
-                                <th scope="col" style="width:20%" class="text-center">Rate Comment</th>
-                                <th scope="col" style="width:20%" class="text-center">Options</th>
-                                <th scope="col" style="width:20%" class="text-center">Guest &amp; Rooms</th>
-                                <th scope="col" style="width:20%" class="text-center">Price</th>
-                                
+                                <th scope="col" style="width:10%" class="text-center">Room</th>
+                                <th scope="col" style="width:50%" class="text-center">Rate Comment</th>
+                                <th scope="col" style="width:15%" class="text-center">Options</th>
+                                <th scope="col" style="width:15%" class="text-center">Guest &amp; Rooms</th>
+                                <th scope="col" style="width:10%" class="text-center">Price</th>
+
                             </tr>
                         </thead>
                         <tbody id="pricelistbody">
@@ -227,8 +227,10 @@ echo '</pre>';*/
                         </div>
                     </td>
                     <td class="text-center">
-                    <p>${data.hotel.rates[i].rate_comments.comments != undefined ? data.hotel.rates[i].rate_comments.comments:''}</p>
-                    <p>${data.hotel.rates[i].rate_comments.pax_comments != undefined ? data.hotel.rates[i].rate_comments.pax_comments:''}</p>
+                        <div style="height: 100px;overflow: auto;">
+                            <p>${data.hotel.rates[i].rate_comments.comments != undefined ? data.hotel.rates[i].rate_comments.comments:''}</p>
+                            <p>${data.hotel.rates[i].rate_comments.pax_comments != undefined ? data.hotel.rates[i].rate_comments.pax_comments:''}</p>
+                        </div>
                     </td>
                     <td class="text-center">
                         <div class="recomd">

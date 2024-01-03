@@ -770,6 +770,8 @@ include "config/logincheck.php";
                   //die;
                   if (data.status == 'confirmed') {
                      window.location.href = `test-hotel-booked-invoice.php?booking_reference=${data.booking_reference}`;
+                  }else {
+                     alert(data.message);
                   }
                }
 
