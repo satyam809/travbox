@@ -144,8 +144,8 @@ include "config/logincheck.php";
    <link rel="icon" type="image/x-icon" href="images/favicon.png">
    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.css">
          <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script> -->
-         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
    <style>
       #cancelationpolicy table tr td {
          padding: 10px !important;
@@ -507,10 +507,10 @@ include "config/logincheck.php";
       </div>
    </div>
    <script>
-      var supplierFee = 0;
-      var serviceFee = 0;
-      var gstFee = 0;
-      var totalPrice = 0;
+      let supplierFee = 0;
+      let serviceFee = 0;
+      let gstFee = 0;
+      let totalPrice = 0;
 
       function showRoomAndPassenger() {
          var data = JSON.parse(localStorage.getItem('selectedHotelRates'));
@@ -629,22 +629,42 @@ include "config/logincheck.php";
                   }
                }
             }
-            // show price details
-            showPriceDetails(data.hotel.rates[l].price_details);
-            totalPrice = totalPrice + data.hotel.rates[l].price;
+
          }
-         //alert(totalPrice);
-         $("#Total").append(`${totalPrice}₹`)
+
          $("#totalRooms").html(html);
       }
 
-      function showPriceDetails(data) {
-         gstFee = gstFee + data.GST[0].amount;
-         supplierFee = supplierFee + data.net[0].amount;
-         serviceFee = serviceFee + data.net[1].amount;
-         $("#SupplierFee").html(`${supplierFee}₹`);
-         $("#ServiceFee").html(`${serviceFee}₹`);
-         $("#GstFee").html(`${gstFee}₹`);
+      function showPriceDetails() {
+         var data = JSON.parse(localStorage.getItem('selectedHotelRates'));
+
+         for (let i = 0; i < data.hotel.rates.length; i++) {
+            $.ajax({
+               url: 'test_search_hotel.php',
+               method: 'POST',
+               data: {
+                  action: 'recheck',
+                  group_code: data.hotel.rates[i].group_code,
+                  rate_key: data.hotel.rates[i].rate_key,
+                  search_id: data.search_id
+               },
+               dataType: "json", // Change 'dataTypes' to 'dataType'
+               success: function(response) {
+                  console.log(response.hotel.rate);
+                  gstFee += response.hotel.rate.price_details.GST[0].amount;
+                  supplierFee += response.hotel.rate.price_details.net[0].amount;
+                  serviceFee += response.hotel.rate.price_details.net[1].amount;
+                  totalPrice += response.hotel.rate.price;
+                  $("#Total").text(`${totalPrice.toFixed(2)}₹`);
+                  $("#GstFee").html(`${gstFee.toFixed(2)}₹`);
+                  $("#ServiceFee").html(`${serviceFee.toFixed(2)}₹`);
+                  $("#SupplierFee").html(`${supplierFee.toFixed(2)}₹`);
+               },
+               error: function(xhr, status, error) {
+                  console.error(error); // Log any errors
+               }
+            });
+         }
       }
 
 
@@ -731,7 +751,7 @@ include "config/logincheck.php";
             }
             booking_details.booking_items.push(items);
          }
-        //console.log(JSON.stringify(booking_details));
+         //console.log(JSON.stringify(booking_details));
          //die;
          $('#paymentModal').modal('show');
          //if (confirm(`Do you want to pay ₹${Math.round(supplierFee + serviceFee + gstFee)}`)) {
@@ -805,7 +825,11 @@ include "config/logincheck.php";
          const result = [formattedDate, formattedDayOfWeek];
          return result;
       }
+      setTimeout(function() {
+         window.location.href = 'hotelsearch.php';
+      }, 60000);
 
       showRoomAndPassenger();
+      showPriceDetails();
    </script>
    <?php include "footer.php"; ?>

@@ -619,7 +619,8 @@ $agentid = $_SESSION['agentUserid'];
                     return $(this).val();
                 }).get(),
                 hotel_codes: [],
-                rooms: []
+                rooms: [],
+                cutoff_time:25000
             };
 
             // var hotelCategoryInput = $("input[name=hotel_category]").val();

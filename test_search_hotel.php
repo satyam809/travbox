@@ -157,6 +157,37 @@ if (!empty($_GET['group_code']) && !empty($_GET['rate_key']) && !empty($_GET['se
     echo $response;
 }
 
+if (!empty($_POST['action']) && $_POST['action'] == 'recheck') {
+    $payload =[
+        "group_code"=> $_POST['group_code'],
+        "rate_key"=> $_POST['rate_key']
+];
+
+    $curl = curl_init();
+
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => 'https://api-sandbox.grnconnect.com//api/v3/hotels/availability/'.$_POST['search_id'].'/rates/?action='.$_POST['action'],
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS => json_encode($payload),
+        CURLOPT_HTTPHEADER => array(
+            'Content-Type: application/json',
+            'api-key: 81a9f0deae0793b24e317d00db04814e',
+            'Accept: application/json'
+        ),
+    ));
+
+    $response = curl_exec($curl);
+
+    curl_close($curl);
+    echo $response;
+}
+
 
 
 if (isset($_POST['proceed_to_pay'])) {

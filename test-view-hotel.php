@@ -76,18 +76,29 @@ echo '</pre>';*/
 
 
             <div class="roomtable" id="pricelist" style="box-shadow: none !important;">
-                <table class="firstrtable">
+                <!-- <table class="firstrtable">
                     <tbody>
                         <tr>
                             <td>Room</td>
                             <td>Options</td>
                             <td>Guest &amp; Rooms</td>
                             <td>Price</td>
+                            <td>Rate Comment</td>
                         </tr>
                     </tbody>
-                </table>
+                </table> -->
                 <form method="post" onSubmit="proceedToBook(event)">
-                    <table class="secondrtable">
+                    <table class="table table-bordered" style="background: white;border-radius: 15px;border-collapse: unset">
+                        <thead>
+                            <tr>
+                                <th scope="col" style="width:20%" class="text-center">Room</th>
+                                <th scope="col" style="width:20%" class="text-center">Rate Comment</th>
+                                <th scope="col" style="width:20%" class="text-center">Options</th>
+                                <th scope="col" style="width:20%" class="text-center">Guest &amp; Rooms</th>
+                                <th scope="col" style="width:20%" class="text-center">Price</th>
+                                
+                            </tr>
+                        </thead>
                         <tbody id="pricelistbody">
 
                         </tbody>
@@ -206,19 +217,24 @@ echo '</pre>';*/
                     '<i class="fa fa-times" aria-hidden="true" style="border:1px solid var(--blue);padding: 3px 3.5px;color: var(--blue);border-radius: 50px;"></i>&nbsp;NON Refundable';
 
                 html += `<tr>
-                    <td>
+                    <td class="text-center"> 
                         <div class="Premium">
                             <h1>${data.hotel.rates[i].rooms[0].description}</h1>
                             <div class="rebox">
                                 <p style="cursor:pointer;" data-toggle="modal" data-target="#cancellationPoliciy">Cancellation Policy</p>
                             </div>
+                            
                         </div>
                     </td>
-                    <td width="20%" align="left" valign="top" style="padding:10px;">
+                    <td class="text-center">
+                    <p>${data.hotel.rates[i].rate_comments.comments != undefined ? data.hotel.rates[i].rate_comments.comments:''}</p>
+                    <p>${data.hotel.rates[i].rate_comments.pax_comments != undefined ? data.hotel.rates[i].rate_comments.pax_comments:''}</p>
+                    </td>
+                    <td class="text-center">
                         <div class="recomd">
                             <p style="cursor:pointer;">
                                 ${refundableIcon}</p>
-                            <div style="font-weight: 700; font-size: 12px;">
+                            <div>
                                 <i class="fa fa-check" aria-hidden="true"></i> ROOM ONLY
                                 <p class="hotels_amenities moreaminities" style="display: none;">
                                     <i class="fa fa-check-circle-o" aria-hidden="true" style="color: #ffc107; margin-right:2px;"></i> Room Mirror
@@ -228,12 +244,14 @@ echo '</pre>';*/
                             </div>
                         </div>
                     </td>
-                    <td>
-                        <div style="font-size:14px; margin-bottom:10px;"><strong><i class="fa fa-building" aria-hidden="true"></i> Rooms ${data.hotel.rates[i].no_of_rooms}</strong></div>
-                        <div style="font-size:14px; margin-bottom:10px;"><strong><i class="fa fa-user" aria-hidden="true"></i> Adults ${total_adult}</strong></div>
-                        <div style="font-size:14px; margin-bottom:10px;"><strong><i class="fa fa-user-circle" aria-hidden="true"></i> Child ${total_children}</strong></div>
+                    <td class="text-center">
+                        <i class="fa fa-building" aria-hidden="true"></i> Rooms ${data.hotel.rates[i].no_of_rooms}
+                        <i class="fa fa-user" aria-hidden="true"></i> Adults ${total_adult}
+                        <i class="fa fa-user-circle" aria-hidden="true"></i> Child ${total_children}
                     </td>
-                    <td><div style="color:#666666;">Total Price</div><div style="font-size:24px; color:#000000; font-weight:700; margin-bottom:5px;">₹${data.hotel.rates[i].price}</div><input type="checkbox" name="selectedRates" onchange="validateCheckbox(this.value)" value='${JSON.stringify(data.hotel.rates[i])}'/></td>
+                    <td class="text-center">
+                    <div style="color:#666666;">Total Price</div><div style="font-size:24px; color:#000000; font-weight:700; margin-bottom:5px;">₹${data.hotel.rates[i].price}&nbsp;<input type="checkbox" name="selectedRates" onchange="validateCheckbox(this.value)" value='${JSON.stringify(data.hotel.rates[i])}'/></td></div>
+                    
                 </tr>`;
             }
             $("#pricelistbody").append(html);
@@ -271,7 +289,7 @@ echo '</pre>';*/
                 localStorage.removeItem('selectedHotelRates');
                 localStorage.setItem('selectedHotelRates', JSON.stringify(hotel_data)); // Assuming hotel_data is intended here
 
-                // Redirecting to the next page
+                //console.log(hotel_data);die;
                 window.location.href = 'test_hotel_review.php';
             } else {
                 toastr.success(`You have to select ${have_to_select} rooms!`, 'Success', {
