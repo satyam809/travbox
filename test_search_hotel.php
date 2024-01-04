@@ -271,7 +271,7 @@ if (isset($_POST['proceed_to_pay'])) {
             if ($new_result['status'] == 'confirmed') {
                 saveBooking($result);
                 echo $result;
-            }else{
+            } else {
                 echo Json_encode(['message' => 'Network Error']);
             }
         } else {
@@ -468,47 +468,82 @@ if (!empty($_GET['booked-hotels']) && $_GET['booked-hotels'] == 1) {
 
 
 if (!empty($_POST['cancel_booking']) && $_POST['cancel_booking'] == 1 && !empty($_POST['book_ref']) && !empty($_POST['id'])) {
-    $apiUrl = 'https://api-sandbox.grnconnect.com//api/v3/hotels/bookings/' . $_POST['book_ref'];
+    $apiUrl = 'https://api-sandbox.grnconnect.com/api/v3/hotels/bookings/' . $_POST['book_ref'];
+
+    // Ensure variables exist and sanitize URL
+    $bookRef = $_POST['book_ref'];
+    $id = $_POST['id'];
 
     $curl = curl_init();
 
-    curl_setopt_array($curl, array(
-        CURLOPT_URL => $apiUrl,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'DELETE',
-        CURLOPT_POSTFIELDS => json_encode(array(
-            "comments" => "cancellation comments",
-            "reason" => 5
-        )),
-        CURLOPT_HTTPHEADER => array(
-            'Content-Type: application/json',
-            'api-key: 81a9f0deae0793b24e317d00db04814e',
-            'Accept: application/json'
-        ),
-    ));
+    if ($curl) {
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $apiUrl,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'DELETE',
+            CURLOPT_POSTFIELDS => json_encode(array(
+                "comments" => "cancellation comments",
+                "reason" => 5
+            )),
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json',
+                'api-key: 81a9f0deae0793b24e317d00db04814e',
+                'Accept: application/json'
+            ),
+        ));
 
-    $response = curl_exec($curl);
+        $response = curl_exec($curl);
 
-    curl_close($curl);
-
-    $newResponse = json_decode($response, true);
-
-    if ($newResponse && $newResponse['status'] == 'confirmed') {
-        $result = cancelBooking($_POST['id'], $response);
-        if ($result['status'] == true) {
-            echo json_encode(['status' => 'confirmed']);
+        if ($response === false) {
+            // Handle cURL error
+            $error = curl_error($curl);
+            echo json_encode(['status' => 'error', 'message' => 'cURL Error: ' . $error]);
         } else {
-            echo json_encode(['status' => 'error', 'message' => 'Error in database operation']);
+            $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+            curl_close($curl);
+
+            if ($statusCode === 200) {
+                $newResponse = json_decode($response, true);
+
+                if ($newResponse && $newResponse['status'] === 'confirmed') {
+                    $result = cancelBooking($id, $response);
+                    if ($result['status'] === true) {
+                        echo json_encode(['status' => 'confirmed']);
+                    } else {
+                        echo json_encode(['status' => 'error', 'message' => 'Error in database operation']);
+                    }
+                } else if ($newResponse && $newResponse['status'] === 'pending') {
+                    sleep(60);
+                    $result = checkPaymentStatus($bookRef);
+                    $new_result = json_decode($result, true);
+                    if ($new_result['status'] === 'confirmed') {
+                        $cancel_result = cancelBooking($id, $response);
+                        if ($cancel_result['status'] === true) {
+                            echo json_encode(['status' => 'confirmed']);
+                        } else {
+                            echo json_encode(['status' => 'error', 'message' => 'Error in database operation']);
+                        }
+                    } else {
+                        echo json_encode(['status' => 'error', 'message' => 'Network Error']);
+                    }
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'Cancellation status not confirmed']);
+                }
+            } else {
+                // Handle HTTP error
+                echo json_encode(['status' => 'error', 'message' => 'HTTP Error: ' . $statusCode]);
+            }
         }
     } else {
-        echo json_encode(['status' => 'error', 'message' => 'Cancellation status not confirmed']);
+        echo json_encode(['status' => 'error', 'message' => 'cURL initialization failed']);
     }
 }
+
 
 function cancelBooking($hotel_booking_id, $cancelData)
 {
