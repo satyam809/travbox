@@ -155,7 +155,7 @@ $agentid = $_SESSION['agentUserid'];
                                             <div class="swapbtn hotelswapbtn" onClick="swapdata();"><i class="fa fa-exchange" aria-hidden="true"></i></div>
                                         </td>
 
-                                        <td width="18%" align="left" valign="top" class="form-group">
+                                        <td width="15%" align="left" valign="top" class="form-group">
                                             <label>
                                                 <div class="lable">CHECK IN</div>
                                             </label>
@@ -164,7 +164,7 @@ $agentid = $_SESSION['agentUserid'];
                                             </div>
                                         </td>
 
-                                        <td width="18%" align="left" valign="top" class="form-group">
+                                        <td width="15%" align="left" valign="top" class="form-group">
 
                                             <label>
                                                 <div class="lable">CHECK OUT</div>
@@ -256,8 +256,19 @@ $agentid = $_SESSION['agentUserid'];
                                             </div>
 
                                         </td>
+                                        <td width="15%" align="left" valign="top">
+                                            <div class="lable">Nationality</div>
+                                            <select id="starcategory" class="textfield" name="client_nationality">
+                                                <option value="IN">Indian</option>
+                                                <option value="US">United States</option>
+                                                <option value="AU">Australia</option>
+                                                <option value="CN">China</option>
+                                                <option value="TH">Thailand</option>
+                                                <option value="ES">Spain</option>
+                                            </select>
+                                        </td>
 
-                                        </label>
+                                       
 
 
 
@@ -293,7 +304,7 @@ $agentid = $_SESSION['agentUserid'];
 
 
 
-    
+
 
     <div class="container" style="margin-top:20px; margin-bottom:20px;">
         <div class="row" style="display:none;" id="hotelFilterList">
@@ -612,7 +623,7 @@ $agentid = $_SESSION['agentUserid'];
             var data = {
                 rates: "comprehensive",
                 currency: "INR",
-                client_nationality: "IN",
+                client_nationality: $("select[name=client_nationality]").val(),
                 checkin: formatDateToYearMonthDay(checkin),
                 checkout: formatDateToYearMonthDay(checkout),
                 hotel_category: $("input[name='category']:checked").map(function() {
@@ -620,14 +631,14 @@ $agentid = $_SESSION['agentUserid'];
                 }).get(),
                 hotel_codes: [],
                 rooms: [],
-                cutoff_time:25000
+                cutoff_time: 25000
             };
 
             // var hotelCategoryInput = $("input[name=hotel_category]").val();
             // data.hotel_category = hotelCategoryInput.split(",").map(category => category.trim());
             //data.hotel_codes.push($("input[name=hotel_codes]").val());
-           // const hotel_code_list = ["1226107", "1226007", "1226039", "1226037", "1226021", "1226091", "1226098"];
-            data.hotel_codes.push("1848138","1226107", "1226007", "1226039", "1226037", "1226021", "1226091", "1226098");
+            // const hotel_code_list = ["1226107", "1226007", "1226039", "1226037", "1226021", "1226091", "1226098"];
+            data.hotel_codes.push("1848138", "1226107", "1226007", "1226039", "1226037", "1226021", "1226091", "1226098");
             var adults = $("select[name='adults']").map(function() {
                 return $(this).val();
             }).get();
@@ -659,8 +670,8 @@ $agentid = $_SESSION['agentUserid'];
                     Loading..`)
                 },
                 success: function(data) {
-                   console.log(data);
-                   $("#hotelResult").empty();
+                    console.log(data);
+                    $("#hotelResult").empty();
                     $("#hotelFilterList").show();
                     var guest = data.no_of_children != undefined ? data.no_of_children : 0;
                     $("input[name=travellers]").val(`${data.no_of_rooms} Rooms - ${data.no_of_adults + guest} Guests`)
@@ -722,14 +733,14 @@ $agentid = $_SESSION['agentUserid'];
                 </div>
                 `;
 
-                
-                
+
+
             }
             //console.log(hotelElements);
 
             $("#hotelOffer").remove();
             //console.log(JSON.stringify(hotelElements));
-            $("#hotelResult").append(hotelElements+=hotelList);
+            $("#hotelResult").append(hotelElements += hotelList);
         }
 
 
