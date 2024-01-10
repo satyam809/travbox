@@ -1,122 +1,6 @@
 <?php
 include "inc.php";
 include "config/logincheck.php";
-// $page = 'hotels';
-
-// $agentid = $_SESSION['parentAgentId'];
-
-// $roomCount = $_REQUEST['empcount'];
-// $adultCount = $_REQUEST['ad'];
-// $childCount = $_REQUEST['cd'];
-
-// $bl = GetPageRecord('*', 'taxMaster', 'id=2 ');
-// $taxData = mysqli_fetch_array($bl);
-
-// // echo "<pre>";
-// // print_r($_SESSION);die;
-
-// if (trim($_POST['action']) == 'roompostaction') {
-
-// 	$HotelSearchDetails = trim($_POST['HotelSearchDetails']);
-// 	$HotelSearchArr = json_decode($HotelSearchDetails);
-
-
-
-
-
-// 	$hotelJsonData = trim($_POST['hotelJsonData']);
-// 	$hotelArr = json_decode($hotelJsonData);
-
-// 	$RoomDetails = trim($_POST['RoomDetails']);
-// 	$RoomArr = json_decode($RoomDetails);
-
-// 	$uniqueId = trim($hotelArr->id);
-// 	$HotelName = trim($hotelArr->name);
-// 	$HotelCode = trim($hotelArr->id);
-// 	$Rating = trim($hotelArr->rt);
-// 	$Address = trim($hotelArr->ad->adr);
-// 	$Destination = trim($HotelSearchArr->Destination);
-// 	$CheckIn = date('Y-m-d', strtotime($HotelSearchArr->CheckIn));
-// 	$CheckOut = date('Y-m-d', strtotime($HotelSearchArr->CheckOut));
-// 	$status = "1";
-
-
-// 	$jsonPost = '{
-// 		"hotelId":"' . trim($uniqueId) . '",
-// 		"optionId":"' . trim($RoomArr->id) . '"
-// 	}';
-
-// 	/*echo '<pre>';
-// 	  print_r($jsonPost);
-// 	  echo '</pre>';*/
-
-// 	$url = "" . $tripjackhotelurl . "hms/v1/hotel-review"; // URL To Hit
-// 	$result = getHotelApiData($url, $jsonPost, $hotelApiKey);
-// 	$updatedPriceArr = json_decode($result);
-// 	/* echo '<pre>';
-// 	  print_r($result);
-// 	  echo '</pre>';*/
-
-// 	foreach ($updatedPriceArr->hInfo->ops{
-// 		0}->ris as $updatedPriceData) {
-// 		$RoomType = trim($updatedPriceData->rt);
-// 		$BaseFare += trim($updatedPriceData->tfcs->BF);
-// 		$TotalFare += trim($updatedPriceData->tfcs->TF);
-// 		$NetFare += trim($updatedPriceData->tfcs->NF);
-// 		$TAX += trim($updatedPriceData->tfcs->TAF);
-// 		$Inclusion = trim($updatedPriceData->mb);
-// 		$ServiceTax = "";
-// 		$SvTax = "";
-// 		$DisTax = "";
-// 		$ExTax = "";
-// 	}
-
-// 	$CancellationPolicy = $updatedPriceArr->hInfo->ops{
-// 		0}->cnp->pd;
-// 	$CancellationPolicy = htmlentities(json_encode($CancellationPolicy, true));
-// 	$RoomTypeCode = trim($RoomArr->id);
-
-
-// 	$hotelCost = calculatehotelcost(encode($agentid), stripslashes($_REQUEST['hotelName']), round($BaseFare), '0');
-// 	$baseFare = $BaseFare;
-// 	$TotalFareForApi = $TotalFare;
-// 	$BookingNote = $updatedPriceArr->hInfo->ops{
-// 		0}->inst{
-// 		0}->msg;
-
-
-// 	$Commission = getHotelAgentCommission($BaseFare, stripslashes($_REQUEST['hotelName']));
-
-
-
-// 	if ($taxData['applicableType'] == 'commission') {
-// 		$agentFinalGST = (($Commission * $taxData['valuePerc']) / 100);
-// 	}
-
-// 	if ($taxData['applicableType'] == 'totalfare') {
-// 		$agentFinalGST = (($BaseFare * $taxData['valuePerc']) / 100);
-// 	}
-
-// 	$clientTax = ($TAX + ($hotelCost[1]));
-
-
-
-// 	$rsa = GetPageRecord('*', 'hotelBookingMaster', 'uniqueId="' . $uniqueId . '"');
-// 	$checkdupli = mysqli_fetch_array($rsa);
-
-// 	if ($checkdupli['uniqueId'] != $uniqueId) {
-
-// 		$namevalue = 'uniqueId="' . $uniqueId . '",HotelName="' . $HotelName . '",HotelCode="' . $HotelCode . '",Rating="' . $Rating . '",Address="' . $Address . '",RoomType="' . $RoomType . '",RoomTypeCode="' . $RoomTypeCode . '",TaxCode="' . $TAX . '",Amount="' . round($BaseFare) . '",CancellationPolicy="' . $CancellationPolicy . '",ServiceTax="' . $ServiceTax . '",SvTax="' . $SvTax . '",DisTax="' . $DisTax . '",ExTax="' . $ExTax . '",status="' . $status . '",Destination="' . $Destination . '",CheckIn="' . $CheckIn . '",CheckOutDate="' . $CheckOut . '",agentId="' . $agentid . '",addDate="' . date('Y-m-d H:i:s') . '",addBy="' . $_SESSION['userid'] . '",Inclusion="' . $Inclusion . '",BookingNote="' . $BookingNote . '",baseFare="' . $BaseFare . '",tax="' . $TAX . '",totalFare="' . $TotalFare . '",agentBaseFare="' . ($hotelCost[2] - $hotelCost[3]) . '",agentTax="' . ($TAX + ($hotelCost[1] - $hotelCost[3])) . '",agentTotalFare="' . (($hotelCost[2] - $hotelCost[3]) + $TAX) . '",clientBaseFare="' . ($hotelCost[2]) . '",clientTax="' . $clientTax . '",clientTotalFare="' . (($hotelCost[2]) + $TAX) . '",markup="' . $hotelCost[4] . '",agentMarkup="' . $hotelCost[3] . '",agentCommision="' . $Commission . '",agentFinalGST="' . $agentFinalGST . '",taxApplicableType="' . $taxData['applicableType'] . '",taxValuePerc="' . $taxData['valuePerc'] . '",taxApplicableOn="' . $taxData['applicableOn'] . '",TotalRoom="' . trim($HotelSearchArr->TotalRoom) . '",detailArray="' . addslashes(serialize($result)) . '"';
-// 		$bookinglastId = addlistinggetlastid('hotelBookingMaster', $namevalue);
-// 		$_SESSION['bookinglastId'] = $bookinglastId;
-// 	}
-
-
-
-// 	$baseFare = $BaseFare;
-// 	$TotalFare = (($hotelCost[2]) + $TAX);
-// 	$TAX = $clientTax;
-// }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -272,8 +156,9 @@ include "config/logincheck.php";
             <span><img src="images/icon/2.png" class="img-class" width="25"></span>
             <span class="icon_span <?php if ($selectedpage == 'flights') { ?>active<?php } ?>">Flights</span>
          </a>
-         <a href="<?php echo $fullurl; ?>hotels">
+         <!-- <a href="<?php //echo $fullurl; ?>hotels"> -->
             <!-- <span><i class="fa fa-hotel"></i></span> -->
+            <a href="hotelsearch.php">
             <span><img src="images/icon/10.png" width="25"></span>
             <span class="icon_span <?php if ($selectedpage == 'hotels') { ?>active<?php } ?>">Hotels</span>
          </a>
@@ -306,17 +191,17 @@ include "config/logincheck.php";
                <span class="icon_span <?php if ($selectedpage == 'services') { ?>active<?php } ?>">Services</span>
             </a>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
-               <a href="<?php echo $fullurl; ?>#" <?php if ($selectedpage == 'visa') { ?>class="active" <?php } ?>><span><i class="fa fa-bus" aria-hidden="true"></i></span>Bus<span< /a>
-                     <a href="<?php echo $fullurl; ?>visa" <?php if ($selectedpage == 'visa') { ?>class="active" <?php } ?>><span><i class="fa fa-cc-visa" aria-hidden="true"></i></span>Visa</a>
-                     <a href="<?php echo $fullurl; ?>int-simcard" <?php if ($selectedpage == 'visa') { ?>class="active" <?php } ?>>
-                        <span>
-                           <svg style="" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sim" viewBox="0 0 16 16">
-                              <path d="M2 1.5A1.5 1.5 0 0 1 3.5 0h7.086a1.5 1.5 0 0 1 1.06.44l1.915 1.914A1.5 1.5 0 0 1 14 3.414V14.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 14.5v-13zM3.5 1a.5.5 0 0 0-.5.5v13a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5V3.414a.5.5 0 0 0-.146-.353l-1.915-1.915A.5.5 0 0 0 10.586 1H3.5z" fill=""></path>
-                              <path d="M5.5 4a.5.5 0 0 0-.5.5V6h2.5V4h-2zm3 0v2H11V4.5a.5.5 0 0 0-.5-.5h-2zM11 7H5v2h6V7zm0 3H8.5v2h2a.5.5 0 0 0 .5-.5V10zm-3.5 2v-2H5v1.5a.5.5 0 0 0 .5.5h2zM4 4.5A1.5 1.5 0 0 1 5.5 3h5A1.5 1.5 0 0 1 12 4.5v7a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 4 11.5v-7z" fill=""></path>
-                           </svg>
-                        </span>
-                        Int'l SIM
-                     </a>
+               <a href="<?php echo $fullurl; ?>#" <?php if ($selectedpage == 'visa') { ?>class="active" <?php } ?>><span><i class="fa fa-bus" aria-hidden="true"></i></span>Bus</a>
+               <a href="<?php echo $fullurl; ?>visa" <?php if ($selectedpage == 'visa') { ?>class="active" <?php } ?>><span><i class="fa fa-cc-visa" aria-hidden="true"></i></span>Visa</a>
+               <a href="<?php echo $fullurl; ?>int-simcard" <?php if ($selectedpage == 'visa') { ?>class="active" <?php } ?>>
+                  <span>
+                     <svg style="" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sim" viewBox="0 0 16 16">
+                        <path d="M2 1.5A1.5 1.5 0 0 1 3.5 0h7.086a1.5 1.5 0 0 1 1.06.44l1.915 1.914A1.5 1.5 0 0 1 14 3.414V14.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 14.5v-13zM3.5 1a.5.5 0 0 0-.5.5v13a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5V3.414a.5.5 0 0 0-.146-.353l-1.915-1.915A.5.5 0 0 0 10.586 1H3.5z" fill=""></path>
+                        <path d="M5.5 4a.5.5 0 0 0-.5.5V6h2.5V4h-2zm3 0v2H11V4.5a.5.5 0 0 0-.5-.5h-2zM11 7H5v2h6V7zm0 3H8.5v2h2a.5.5 0 0 0 .5-.5V10zm-3.5 2v-2H5v1.5a.5.5 0 0 0 .5.5h2zM4 4.5A1.5 1.5 0 0 1 5.5 3h5A1.5 1.5 0 0 1 12 4.5v7a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 4 11.5v-7z" fill=""></path>
+                     </svg>
+                  </span>
+                  Int'l SIM
+               </a>
             </div>
          </div>
       </div>
@@ -391,6 +276,20 @@ include "config/logincheck.php";
                                           </td>
                                           <td align="left" valign="top" style="padding: 0px 30px;">&nbsp;</td>
                                           <td align="left" valign="middle" style="font-size: 16px;"><strong id="no-of-adult"></strong>&nbsp;Adults | <span id="no-of-child"></span> Childs&nbsp;|&nbsp;<span id="no-of-room"></span> Rooms</td>
+                                       </tr>
+                                    </tbody>
+                                 </table>
+                              </div>
+                              <div style="margin-top: 10px;">
+                                 <table width="100%" border="1" cellpadding="5" cellspacing="0" bordercolor="#CCCCCC" style="font-size: 13px; font-weight: 600;">
+                                    <thead>
+                                       <tr>
+                                          <td class="text-center" bgcolor="#F4F4F4" style="padding: 10px;width:70%;">Rate Comment</td>
+                                       </tr>
+                                    </thead>
+                                    <tbody id="other_detail">
+                                       <tr>
+                                          <td id="rateComments"></td>
                                        </tr>
                                     </tbody>
                                  </table>
@@ -514,7 +413,6 @@ include "config/logincheck.php";
 
       function showRoomAndPassenger() {
          var data = JSON.parse(localStorage.getItem('selectedHotelRates'));
-         //console.log(JSON.stringify(data));
          var checkin = covertDate(data.checkin);
          var checkout = covertDate(data.checkout);
 
@@ -637,7 +535,7 @@ include "config/logincheck.php";
 
       function showPriceDetails() {
          var data = JSON.parse(localStorage.getItem('selectedHotelRates'));
-
+         console.log(data);
          for (let i = 0; i < data.hotel.rates.length; i++) {
             $.ajax({
                url: 'test_search_hotel.php',
@@ -650,15 +548,16 @@ include "config/logincheck.php";
                },
                dataType: "json", // Change 'dataTypes' to 'dataType'
                success: function(response) {
-                  console.log(response.hotel.rate);
+                  //console.log(response);
                   gstFee += response.hotel.rate.price_details.GST[0].amount;
                   supplierFee += response.hotel.rate.price_details.net[0].amount;
                   serviceFee += response.hotel.rate.price_details.net[1].amount;
                   totalPrice += response.hotel.rate.price;
-                  $("#Total").text(`${totalPrice.toFixed(2)}₹`);
-                  $("#GstFee").html(`${gstFee.toFixed(2)}₹`);
-                  $("#ServiceFee").html(`${serviceFee.toFixed(2)}₹`);
-                  $("#SupplierFee").html(`${supplierFee.toFixed(2)}₹`);
+                  $("#Total").text(`₹${totalPrice.toFixed(2)}`);
+                  $("#GstFee").html(`₹${gstFee.toFixed(2)}`);
+                  $("#ServiceFee").html(`₹${serviceFee.toFixed(2)}`);
+                  $("#SupplierFee").html(`₹${supplierFee.toFixed(2)}`);
+                  otherDetails(response)
                },
                error: function(xhr, status, error) {
                   console.error(error); // Log any errors
@@ -667,11 +566,16 @@ include "config/logincheck.php";
          }
       }
 
+      function otherDetails(data) {
+         //console.log(data);
+         $("#roomType").append(data.hotel.rate.rooms[0].room_type);
+         $("#rateComments").append(data.hotel.rate.rate_comments.comments != undefined ? data.hotel.rate.rate_comments.comments + ' ' + data.hotel.rate.rate_comments.pax_comments:data.hotel.rate.rate_comments.pax_comments)
+      }
+
 
       function proceedToPay(event) {
          event.preventDefault();
          var data = JSON.parse(localStorage.getItem('selectedHotelRates'));
-         //console.log(data);die;
          let booking_details = {
             "search_id": data.search_id,
             "hotel_code": data.hotel.hotel_code,
@@ -685,7 +589,6 @@ include "config/logincheck.php";
          };
          //alert(data.hotel.rates.length);
          for (var i = 0; i < data.hotel.rates.length; i++) {
-            //console.log(i)
             var room_code = $(`input[name='room_code_BookingItem${i + 1}']`).val();
 
             var rate_key = $(`input[name='rate_key_BookingItem${i + 1}']`).val();
@@ -723,7 +626,6 @@ include "config/logincheck.php";
                   "room_type": room_type,
                   "paxes": [] // Initialize paxes array for each room
                };
-               //console.log(names);die;
                for (var k = 0; k < titles.length; k++) {
                   if (types[k] === 'CH') {
                      var childAge = ages.splice(0, 1);
@@ -746,15 +648,10 @@ include "config/logincheck.php";
                }
 
                items.rooms.push(room);
-               //console.log(items);die;
-               //booking_details.booking_items.push(items);
             }
             booking_details.booking_items.push(items);
          }
-         //console.log(JSON.stringify(booking_details));
-         //die;
          $('#paymentModal').modal('show');
-         //if (confirm(`Do you want to pay ₹${Math.round(supplierFee + serviceFee + gstFee)}`)) {
          $("#totalAmount").text(Math.round(supplierFee + serviceFee + gstFee))
          $('#confirmPaymentBtn').click(function() {
             $.ajax({
@@ -766,11 +663,9 @@ include "config/logincheck.php";
                },
                dataType: 'JSON',
                success: function(data) {
-                  console.log(data);
-                  //die;
                   if (data.status == 'confirmed') {
                      window.location.href = `test-hotel-booked-invoice.php?booking_reference=${data.booking_reference}`;
-                  }else {
+                  } else {
                      alert(data.message);
                   }
                }
@@ -795,14 +690,19 @@ include "config/logincheck.php";
                         </tr>
                     </thead>
                     <tbody>`;
+         if (data.hotel.rates[0].cancellation_policy != undefined) {
+            for (var j = 0; j < data.hotel.rates[0].cancellation_policy.details.length; j++) {
+               if (data.hotel.rates[0].cancellation_policy != undefined) {
+                  cancelationhtml += `<tr>
+                                    <td style="border-bottom: 1px solid #ddd;">${localTimeZone(data.hotel.rates[0].cancellation_policy.details[j].from)}</td>
+                                    <td style="border-bottom: 1px solid #ddd;">${data.hotel.rates[0].cancellation_policy.cancel_by_date != undefined ? localTimeZone(data[j].cancellation_policy.cancel_by_date) : ''}</td>
+                                    <td style="border-bottom: 1px solid #ddd;">₹${data.hotel.rates[0].cancellation_policy.details[j].flat_fee}</td>
+                                 </tr>`;
+                  if (data.hotel.rates[0].cancellation_policy.no_show_fee != undefined) {
+                     cancelationhtml += `<tr><td>No show fee</td><td></td><td>₹${data.hotel.rates[0].cancellation_policy.no_show_fee.flat_fee}</td></tr>`
+                  }
 
-         for (var j = 0; j < data.length; j++) {
-            if (data[j].cancellation_policy != undefined) {
-               cancelationhtml += `<tr>
-                <td style="border-bottom: 1px solid #ddd;">${data[j].cancellation_policy.details[j].from}</td>
-                <td style="border-bottom: 1px solid #ddd;">${data[j].cancellation_policy.cancel_by_date != undefined ? data[j].cancellation_policy.cancel_by_date : ''}</td>
-                <td style="border-bottom: 1px solid #ddd;">₹${data[j].cancellation_policy.details[j].flat_fee}</td>
-            </tr>`;
+               }
             }
          }
 
@@ -827,9 +727,18 @@ include "config/logincheck.php";
          const result = [formattedDate, formattedDayOfWeek];
          return result;
       }
-      setTimeout(function() {
-         window.location.href = 'hotelsearch.php';
-      }, 60000);
+
+      function localTimeZone(data) {
+         const date = new Date(data + 'Z'); // Appending 'Z' indicates UTC time
+
+         const ISTTime = date.toLocaleString('en-US', {
+            timeZone: 'Asia/Kolkata'
+         });
+         return ISTTime;
+      }
+      // setTimeout(function() {
+      //    window.location.href = 'hotelsearch.php';
+      // }, 60000);
 
       showRoomAndPassenger();
       showPriceDetails();
