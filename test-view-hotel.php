@@ -124,12 +124,15 @@ echo '</pre>';*/
                     </div>
                     <div class="modal-body" id="popcontent">
                         <table width="100%" border="1" cellpadding="5" cellspacing="0" bordercolor="#CCCCCC" style=" font-size:13px; font-weight:600;">
-                            <tbody id="appendCancellation">
+                            <thead>
                                 <tr>
                                     <td bgcolor="#F4F4F4"><strong>From Date</strong></td>
                                     <td bgcolor="#F4F4F4"><strong>To Date</strong></td>
                                     <td bgcolor="#F4F4F4"><strong>Penalty amount</strong></td>
                                 </tr>
+                            </thead>
+                            <tbody id="appendCancellation">
+
 
                             </tbody>
                         </table>
@@ -147,20 +150,18 @@ echo '</pre>';*/
         const hcode = '<?php echo $_GET['hcode']; ?>';
         const searchId = '<?php echo $_GET['searchId']; ?>';
         let hotel_data;
-        //console.log("You have to select " + have_to_select + " rooms");
+
         function fetchHotelDetail() {
             $.ajax({
                 url: `test_search_hotel.php/?searchId=${searchId}&hcode=${hcode}`,
                 method: 'GET',
                 dataType: 'JSON',
                 success: function(data) {
-                    // console.log(JSON.stringify(data))
 
                     $("#hotelImage").attr('src', data.hotel.images.url);
                     $("#hotelDescription").html(data.hotel.description);
                     var html = "";
                     var facilities = data.hotel.facilities.split(';');
-                    // console.log(facilities)
                     for (var i = 0; i < facilities.length; i++) {
                         if (i == 5) {
                             break;
@@ -169,7 +170,6 @@ echo '</pre>';*/
                         }
                     }
                     $("#hotelFacilities").append(html + `<div class="col" style="display:flex;align-items:center;"><div class="text-center"><button class="btn btn-primary" onClick="showMorefacilities('${facilities}')">Read More</button></div>`);
-                    //console.log(facilities)
                     showHotelRates(data);
 
 
@@ -201,7 +201,6 @@ echo '</pre>';*/
         }
 
         function showHotelRates(data) {
-            console.log(data.hotel.rates);
             hotel_data = data;
             have_to_select = data.no_of_rooms;
             let html = ``;
@@ -214,14 +213,17 @@ echo '</pre>';*/
                 }
                 const refundableIcon = data.hotel.rates[i].non_refundable === true ?
                     '<i class="fa fa-check" aria-hidden="true" style="border:1px solid var(--blue);padding: 3px 3.5px;color: var(--blue);border-radius: 50px;"></i>&nbsp;NON Refundable' :
-                    '<i class="fa fa-times" aria-hidden="true" style="border:1px solid var(--blue);padding: 3px 3.5px;color: var(--blue);border-radius: 50px;"></i>&nbsp;NON Refundable';
+                    '';
 
+                //cancellationPolicy(data.hotel.rates[i].cancellation_policy);
+                var cancellationPolicy = JSON.stringify(data.hotel.rates[i].cancellation_policy);
+                console.log(cancellationPolicy);
                 html += `<tr>
                     <td class="text-center"> 
                         <div class="Premium">
                             <h1>${data.hotel.rates[i].rooms[0].description}</h1>
                             <div class="rebox">
-                                <p style="cursor:pointer;" data-toggle="modal" data-target="#cancellationPoliciy">Cancellation Policy</p>
+                                <p style="cursor:pointer;" data-toggle="modal" data-target="#cancellationPoliciy" data-policy=${cancellationPolicy} onclick="handleCancellationPolicy(this)">Cancellation Policy</p>
                             </div>
                             
                         </div>
@@ -252,16 +254,11 @@ echo '</pre>';*/
                         <i class="fa fa-user-circle" aria-hidden="true"></i> Child ${total_children}
                     </td>
                     <td class="text-center">
-                    <div style="color:#666666;">Total Price</div><div style="font-size:24px; color:#000000; font-weight:700; margin-bottom:5px;">₹${data.hotel.rates[i].price}&nbsp;<input type="checkbox" name="selectedRates" onchange="validateCheckbox(this.value)" value='${JSON.stringify(data.hotel.rates[i])}'/></td></div>
+                    <div style="color:#666666;">Total Price</div><div style="font-size:24px; color:#000000; font-weight:700; margin-bottom:5px;">₹${data.hotel.rates[i].price}&nbsp;<input type="checkbox" name="selectedRates" value='${JSON.stringify(data.hotel.rates[i])}'/></td></div>
                     
                 </tr>`;
             }
             $("#pricelistbody").append(html);
-        }
-
-        function validateCheckbox(checkbox) {
-            // let data = JSON.parse(checkbox);
-            // selected_room = selected_room + data.no_of_rooms;
         }
 
         function proceedToBook(event) {
@@ -289,9 +286,7 @@ echo '</pre>';*/
 
                 // Storing in localStorage
                 localStorage.removeItem('selectedHotelRates');
-                localStorage.setItem('selectedHotelRates', JSON.stringify(hotel_data)); // Assuming hotel_data is intended here
-
-                //console.log(hotel_data);die;
+                localStorage.setItem('selectedHotelRates', JSON.stringify(hotel_data));
                 window.location.href = 'test_hotel_review.php';
             } else {
                 toastr.success(`You have to select ${have_to_select} rooms!`, 'Success', {
@@ -301,8 +296,35 @@ echo '</pre>';*/
             }
         }
 
+        function handleCancellationPolicy(element) {
+            $("#appendCancellation").empty();
+            let data = JSON.parse(element.getAttribute('data-policy'));
+            let cancelationhtml = '';
+            for (var j = 0; j < data.details.length; j++) {
+                cancelationhtml += `<tr>
+                            <td style="border-bottom: 1px solid #ddd;">${localTimeZone(data.details[j].from)}</td>
+                            <td style="border-bottom: 1px solid #ddd;">${data.details[j].cancel_by_date !== undefined ? localTimeZone(data.details[j].cancel_by_date) : ''}</td>
+                            <td style="border-bottom: 1px solid #ddd;">₹${data.details[j].flat_fee}</td>
+                         </tr>`;
+
+                if (data.no_show_fee !== undefined) {
+                    cancelationhtml += `<tr><td>No show fee</td><td></td><td>₹${data.no_show_fee.flat_fee}</td></tr>`;
+                }
+            }
+
+            $("#appendCancellation").append(cancelationhtml);
+        }
 
 
+
+        function localTimeZone(data) {
+            const date = new Date(data + 'Z'); // Appending 'Z' indicates UTC time
+
+            const ISTTime = date.toLocaleString('en-US', {
+                timeZone: 'Asia/Kolkata'
+            });
+            return ISTTime;
+        }
 
         fetchHotelDetail();
     </script>
