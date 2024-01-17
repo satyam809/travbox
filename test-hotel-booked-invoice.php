@@ -6,32 +6,30 @@ include "config/logincheck.php";
 
 $page = 'hotels';
 
-if (isset($_REQUEST['i']) && decode($_REQUEST['i']) > 0) {
+if (decode($_REQUEST['i']) > 0) {
   $a = GetPageRecord('*', 'flightBookingMaster', ' id="' . decode($_REQUEST['i']) . '" and agentId="' . $_SESSION['agentUserid'] . '"');
 
   $rest = mysqli_fetch_array($a);
 }
-if (isset($_REQUEST['r'])) {
+if ($_REQUEST['r'] != '') {
 
   $ab = GetPageRecord('*', 'flightBookingMaster', ' id="' . decode($_REQUEST['r']) . '" and agentId="' . $_SESSION['agentUserid'] . '"');
 
   $resreturn = mysqli_fetch_array($ab);
 }
 
-if (isset($rest['id'])) {
+if ($rest['id'] != '') {
 
   $a = GetPageRecord('*', 'flightBookingMaster', ' id="' . $rest['id'] . '" ');
 
   $editresult = mysqli_fetch_array($a);
 }
-if(isset($_REQUEST['i'])){
 $a = GetPageRecord('*', 'flightBookingMaster', ' id="' . decode($_REQUEST['i']) . '" and agentId="' . $_SESSION['agentUserid'] . '"');
 
 $restone = mysqli_fetch_array($a);
 $ab = GetPageRecord('*', 'flightBookingMaster', ' id="' . decode($_REQUEST['r']) . '" and agentId="' . $_SESSION['agentUserid'] . '"');
 
 $restreturntwo = mysqli_fetch_array($ab);
-}
 ?>
 
 <!DOCTYPE html>

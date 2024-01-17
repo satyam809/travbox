@@ -1,12 +1,12 @@
 <?php
 $systemname="Earn My Travel";
 $footerversion="V. 3.0 - Earn My Travel"; 
-$adminurl="https://travbizz.in/earnmytravel/masteradmin/";
-$websiteurl="https://travbizz.in/earnmytravel/agent/";
-$fullurl="https://travbizz.in/earnmytravel/agent/";
-$logoutUrl="https://travbizz.in/earnmytravel/agent/";
-$imgurl="https://travbizz.in/earnmytravel/masteradmin/upload/";
-$cabimgurl="https://travbizz.in/earnmytravel/masteradmin/upload/";
+$adminurl="http://localhost/travbox//masteradmin/";
+$websiteurl="http://localhost/travbox//agent/";
+$fullurl="http://localhost/travbox//agent/";
+$logoutUrl="http://localhost/travbox//agent/";
+$imgurl="http://localhost/travbox//masteradmin/upload/";
+$cabimgurl="http://localhost/travbox//masteradmin/upload/";
 
 
 

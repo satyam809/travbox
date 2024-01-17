@@ -736,9 +736,9 @@ include "config/logincheck.php";
          });
          return ISTTime;
       }
-      // setTimeout(function() {
-      //    window.location.href = 'hotelsearch.php';
-      // }, 60000);
+      setTimeout(function() {
+         window.location.href = 'hotelsearch.php';
+       }, 60000);
 
       showRoomAndPassenger();
       showPriceDetails();

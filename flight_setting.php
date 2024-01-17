@@ -1,7 +1,7 @@
-<?php
-$api = GetPageRecord('*', 'sys_companyMaster', ' id=1');
+<?php   
+$api=GetPageRecord('*','sys_companyMaster',' id=1'); 
 
-$apiData = mysqli_fetch_array($api);
+$apiData=mysqli_fetch_array($api); 
 // print_r($apiData);
 
 
@@ -12,7 +12,7 @@ $hitSource = 'P'; //Production
 
 $A_ID = '79820682';
 
-$PWD = 'flyshop1234';
+$PWD = 'flyshop1234'; 
 
 $U_ID = 'flyshop';
 
@@ -86,34 +86,37 @@ function logger($errorlog)
 
 {
 
-	$newfile = 	'errorlog/errorlog' . date('dmy') . '.txt';
+	$newfile = 	'errorlog/errorlog'.date('dmy').'.txt';
 
 
 
 	//rename('errorlog/miserrorlog.txt',$newfile);
 
+  
 
+	if(!file_exists($newfile))
 
-	if (!file_exists($newfile)) {
+	{
 
-		file_put_contents($newfile, '');
+	  file_put_contents($newfile,'');
+
 	}
 
-	$logfile = fopen($newfile, 'a');
+	$logfile=fopen($newfile,'a');
 
-
+	
 
 	$ip = $_SERVER['REMOTE_ADDR'];
 
 	date_default_timezone_set('Asia/Kolkata');
 
-	$time = date('d-m-Y h:i:s A', time());
+	$time = date('d-m-Y h:i:s A',time());
 
 	//$contents = file_get_contents('errorlog/errorlog.txt');
 
 	$contents = "$ip\t$time\t$errorlog\r";
 
-	fwrite($logfile, $contents);
+	fwrite($logfile,$contents);
 
 	//file_put_contents('errorlog/errorlog.txt',$contents);
 
@@ -123,22 +126,24 @@ function logger($errorlog)
 
 
 
-function getflightlogo($name)
-{
+function getflightlogo($name){
 
 
 
-	$a = GetPageRecord('*', 'sys_flightName', ' name like "%' . $name . '%"');
+$a=GetPageRecord('*','sys_flightName',' name like "%'.$name.'%"'); 
 
-	$res = mysqli_fetch_array($a);
+$res=mysqli_fetch_array($a); 
 
-	if ($res['details'] != '') {
+if($res['details']!=''){
 
-		return stripslashes($res['details']);
-	} else {
+return stripslashes($res['details']);
 
-		return 'noflightlogo.png';
-	}
+} else {
+
+return 'noflightlogo.png';
+
+}
+
 }
 
 
@@ -147,17 +152,227 @@ function getflightlogo($name)
 
 
 
-function getflightdestination($code)
-{
+function getflightdestination($code){ 
 
-	if ($code != '') {
+if($code!=''){
 
-		$a = GetPageRecord('*', 'flightDestinationMaster', ' airportCode="' . trim($code) . '"');
+$a=GetPageRecord('*','flightDestinationMaster',' airportCode="'.trim($code).'"'); 
 
-		$res = mysqli_fetch_array($a);
+$res=mysqli_fetch_array($a);  
 
-		return stripslashes($res['city']);
-	}
+return stripslashes($res['city']); 
+
+}
+
+}
+
+  
+
+
+
+
+
+ 
+
+
+
+function offlineflight($agentId,$flightName,$fareType){  
+
+ 
+ 
+
+  $a=GetPageRecord('commissionType','sys_userMaster','  id="'.$_SESSION['parentid'].'"');  
+
+$editresultgroup=mysqli_fetch_array($a);  
+
+  
+
+
+
+if (strpos($fareType, '~') !== false) {
+
+$fareType=explode('~',$fareType); 
+
+$fareType=$fareType[1];
+
+}
+
+
+
+if(trim($fareType[1])==''){
+
+$fareType=$fareType;
+
+}
+
+
+
+if(trim($fareType[1])==''){
+
+$fareType=$fareType;
+
+}
+
+ 
+
+
+
+$ace=GetPageRecord('*','fareTypeofflineflightsbookingMaster',' sectorType="'.$_SESSION['domesticorinter'].'" and name in (select displayType from fareTypeMaster where    FIND_IN_SET("'.trim($fareType).'",fareTypeName) ) and agentTypeGroupId="'.$editresultgroup['commissionType'].'" and flightId in (select id from offlineflightsbookingMaster where name="'.$flightName.'")');  
+
+if(mysqli_num_rows($ace)>0){ 
+
+
+
+return '1';
+
+
+
+}else{ 
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+ $a=GetPageRecord('commissionType','sys_userMaster',' id="'.$_SESSION['agentUserid'].'"');  
+
+$editresultgroup=mysqli_fetch_array($a);  
+
+  
+
+
+
+if (strpos($fareType, '~') !== false) {
+
+$fareType=explode('~',$fareType); 
+
+$fareType=$fareType[1];
+
+}
+
+
+
+if(trim($fareType[1])==''){
+
+$fareType=$fareType;
+
+}
+
+
+
+if(trim($fareType[1])==''){
+
+$fareType=$fareType;
+
+}
+
+ 
+
+
+
+$ace=GetPageRecord('*','fareTypeofflineflightsbookingMaster',' sectorType="'.$_SESSION['domesticorinter'].'" and name in (select displayType from fareTypeMaster where    FIND_IN_SET("'.trim($fareType).'",fareTypeName) ) and agentTypeGroupId="'.$editresultgroup['commissionType'].'" and flightId in (select id from offlineflightsbookingMaster where name="'.$flightName.'")');  
+
+if(mysqli_num_rows($ace)>0){ 
+
+
+
+return '1';
+
+
+
+}else{ 
+
+
+
+return '0';
+
+} 
+
+ 
+
+} 
+
+ 
+
+ 
+
+}
+
+
+
+function offlineflightifagentoffline($agentId,$flightName,$fareType){  
+
+ 
+
+     
+
+ 
+
+ $a=GetPageRecord('commissionType','sys_userMaster',' id="'.$_SESSION['agentUserid'].'"');  
+
+$editresultgroup=mysqli_fetch_array($a);  
+
+  
+
+
+
+if (strpos($fareType, '~') !== false) {
+
+$fareType=explode('~',$fareType); 
+
+$fareType=$fareType[1];
+
+}
+
+
+
+if(trim($fareType[1])==''){
+
+$fareType=$fareType;
+
+}
+
+
+
+if(trim($fareType[1])==''){
+
+$fareType=$fareType;
+
+}
+
+  
+
+
+
+$ace=GetPageRecord('*','fareTypeofflineflightsbookingMaster',' sectorType="'.$_SESSION['domesticorinter'].'" and name in (select displayType from fareTypeMaster where    FIND_IN_SET("'.trim($fareType).'",fareTypeName) ) and agentTypeGroupId="'.$editresultgroup['commissionType'].'" and flightId in (select id from offlineflightsbookingMaster where name="'.$flightName.'")');  
+
+if(mysqli_num_rows($ace)>0){ 
+
+
+
+return '1';
+
+
+
+}else{ 
+
+
+
+return '0';
+
+} 
+
+ 
+
+ 
+
+ 
+
 }
 
 
@@ -170,482 +385,341 @@ function getflightdestination($code)
 
 
 
-function offlineflight($agentId, $flightName, $fareType)
-{
 
 
+ 
 
+function offlineflightAgent($agentId,$flightName,$fareType){  
 
-	$a = GetPageRecord('commissionType', 'sys_userMaster', '  id="' . $_SESSION['parentid'] . '"');
+ if($agentId!=''){
 
-	$editresultgroup = mysqli_fetch_array($a);
 
 
+$returnData = '0';
 
+ 
 
+if (strpos($fareType, '~') !== false) {
 
-	if (strpos($fareType, '~') !== false) {
+$fareType=explode('~',$fareType); 
 
-		$fareType = explode('~', $fareType);
+$fareType=$fareType[1];
 
-		$fareType = $fareType[1];
-	}
+}  
 
 
 
-	if (trim($fareType[1]) == '') {
 
-		$fareType = $fareType;
-	}
 
+if(trim($fareType[1])==''){
 
+$fareType=$fareType;
 
-	if (trim($fareType[1]) == '') {
+}
 
-		$fareType = $fareType;
-	}
+ 
 
+$a=GetPageRecord('*','agent_fareTypeofflineflightsbookingMaster',' sectorType="'.$_SESSION['domesticorinter'].'" and agentId="'.($agentId).'" and addBy="'.($agentId).'" and name="'.trim($fareType).'" and flightId in (select id from offlineflightsbookingMaster where name="'.$flightName.'")');   
 
+if(mysqli_num_rows($a)>0){ 
 
+$returnData = '1';  
 
+}else{ 
 
-	$ace = GetPageRecord('*', 'fareTypeofflineflightsbookingMaster', ' sectorType="' . $_SESSION['domesticorinter'] . '" and name in (select displayType from fareTypeMaster where    FIND_IN_SET("' . trim($fareType) . '",fareTypeName) ) and agentTypeGroupId="' . $editresultgroup['commissionType'] . '" and flightId in (select id from offlineflightsbookingMaster where name="' . $flightName . '")');
+ $ba=GetPageRecord('*','agent_fareTypeofflineflightsbookingMaster',' sectorType="'.$_SESSION['domesticorinter'].'" and  agentId="'.($agentId).'" and addBy="'.($agentId).'"  and name="All" and flightId in (select id from offlineflightsbookingMaster where name="'.$flightName.'")');
 
-	if (mysqli_num_rows($ace) > 0) {
+if(mysqli_num_rows($ba)>0){ 
 
+$returnData = '1'; 
 
+} 
 
-		return '1';
-	} else {
+} 
 
+} 
 
+ 
 
+return $returnData; 
 
 
 
-
-
-
-
-
-		$a = GetPageRecord('commissionType', 'sys_userMaster', ' id="' . $_SESSION['agentUserid'] . '"');
-
-		$editresultgroup = mysqli_fetch_array($a);
-
-
-
-
-
-		if (strpos($fareType, '~') !== false) {
-
-			$fareType = explode('~', $fareType);
-
-			$fareType = $fareType[1];
-		}
-
-
-
-		if (trim($fareType[1]) == '') {
-
-			$fareType = $fareType;
-		}
-
-
-
-		if (trim($fareType[1]) == '') {
-
-			$fareType = $fareType;
-		}
-
-
-
-
-
-		$ace = GetPageRecord('*', 'fareTypeofflineflightsbookingMaster', ' sectorType="' . $_SESSION['domesticorinter'] . '" and name in (select displayType from fareTypeMaster where    FIND_IN_SET("' . trim($fareType) . '",fareTypeName) ) and agentTypeGroupId="' . $editresultgroup['commissionType'] . '" and flightId in (select id from offlineflightsbookingMaster where name="' . $flightName . '")');
-
-		if (mysqli_num_rows($ace) > 0) {
-
-
-
-			return '1';
-		} else {
-
-
-
-			return '0';
-		}
-	}
 }
 
 
 
-function offlineflightifagentoffline($agentId, $flightName, $fareType)
-{
+ 
+
+function getBlockFlights($agentId,$flightName,$fareType){
 
 
 
 
 
+ $a=GetPageRecord('commissionType','sys_userMaster',' id="'.$_SESSION['agentUserid'].'"');  
 
-
-	$a = GetPageRecord('commissionType', 'sys_userMaster', ' id="' . $_SESSION['agentUserid'] . '"');
-
-	$editresultgroup = mysqli_fetch_array($a);
-
+$editresultgroup=mysqli_fetch_array($a);  
 
 
 
+ $b=GetPageRecord('commissionType','sys_userMaster',' id="'.$_SESSION['parentid'].'"');  
 
-	if (strpos($fareType, '~') !== false) {
+$editresultgroupAdmin=mysqli_fetch_array($b);  
 
-		$fareType = explode('~', $fareType);
-
-		$fareType = $fareType[1];
-	}
+  
 
 
 
-	if (trim($fareType[1]) == '') {
+if (strpos($fareType, '~') !== false) {
 
-		$fareType = $fareType;
-	}
+$fareType=explode('~',$fareType); 
 
+$fareType=$fareType[1];
 
-
-	if (trim($fareType[1]) == '') {
-
-		$fareType = $fareType;
-	}
-
-
-
-
-
-	$ace = GetPageRecord('*', 'fareTypeofflineflightsbookingMaster', ' sectorType="' . $_SESSION['domesticorinter'] . '" and name in (select displayType from fareTypeMaster where    FIND_IN_SET("' . trim($fareType) . '",fareTypeName) ) and agentTypeGroupId="' . $editresultgroup['commissionType'] . '" and flightId in (select id from offlineflightsbookingMaster where name="' . $flightName . '")');
-
-	if (mysqli_num_rows($ace) > 0) {
-
-
-
-		return '1';
-	} else {
-
-
-
-		return '0';
-	}
 }
 
 
 
+if(trim($fareType[1])==''){
 
+$fareType=$fareType;
 
-
-
-
-
-
-
-
-
-
-
-function offlineflightAgent($agentId, $flightName, $fareType)
-{
-
-	if ($agentId != '') {
-
-
-
-		$returnData = '0';
-
-
-
-		if (strpos($fareType, '~') !== false) {
-
-			$fareType = explode('~', $fareType);
-
-			$fareType = $fareType[1];
-		}
-
-
-
-
-
-		if (trim($fareType[1]) == '') {
-
-			$fareType = $fareType;
-		}
-
-
-
-		$a = GetPageRecord('*', 'agent_fareTypeofflineflightsbookingMaster', ' sectorType="' . $_SESSION['domesticorinter'] . '" and agentId="' . ($agentId) . '" and addBy="' . ($agentId) . '" and name="' . trim($fareType) . '" and flightId in (select id from offlineflightsbookingMaster where name="' . $flightName . '")');
-
-		if (mysqli_num_rows($a) > 0) {
-
-			$returnData = '1';
-		} else {
-
-			$ba = GetPageRecord('*', 'agent_fareTypeofflineflightsbookingMaster', ' sectorType="' . $_SESSION['domesticorinter'] . '" and  agentId="' . ($agentId) . '" and addBy="' . ($agentId) . '"  and name="All" and flightId in (select id from offlineflightsbookingMaster where name="' . $flightName . '")');
-
-			if (mysqli_num_rows($ba) > 0) {
-
-				$returnData = '1';
-			}
-		}
-	}
-
-
-
-	return $returnData;
 }
 
 
 
+if(trim($fareType[1])==''){
 
+$fareType=$fareType;
 
-function getBlockFlights($agentId, $flightName, $fareType)
-{
+}
 
+ 
 
+$ace=GetPageRecord('*','fareTypeblockFlightMaster',' sectorType="'.$_SESSION['domesticorinter'].'"  and name in (select displayType from fareTypeMaster where    FIND_IN_SET("'.trim($fareType).'",fareTypeName) ) and agentTypeGroupId="'.$editresultgroupAdmin['commissionType'].'" and addBy=1 and blockFlightId in (select id from blockFlightMaster where name="'.$flightName.'")');  
 
-
-
-	$a = GetPageRecord('commissionType', 'sys_userMaster', ' id="' . $_SESSION['agentUserid'] . '"');
-
-	$editresultgroup = mysqli_fetch_array($a);
-
-
-
-	$b = GetPageRecord('commissionType', 'sys_userMaster', ' id="' . $_SESSION['parentid'] . '"');
-
-	$editresultgroupAdmin = mysqli_fetch_array($b);
+if(mysqli_num_rows($ace)>0){  
 
 
 
-
-
-	if (strpos($fareType, '~') !== false) {
-
-		$fareType = explode('~', $fareType);
-
-		$fareType = $fareType[1];
-	}
+return '1';
 
 
 
-	if (trim($fareType[1]) == '') {
+} else { 
 
-		$fareType = $fareType;
-	}
-
-
-
-	if (trim($fareType[1]) == '') {
-
-		$fareType = $fareType;
-	}
+ 
 
 
 
-	$ace = GetPageRecord('*', 'fareTypeblockFlightMaster', ' sectorType="' . $_SESSION['domesticorinter'] . '"  and name in (select displayType from fareTypeMaster where    FIND_IN_SET("' . trim($fareType) . '",fareTypeName) ) and agentTypeGroupId="' . $editresultgroupAdmin['commissionType'] . '" and addBy=1 and blockFlightId in (select id from blockFlightMaster where name="' . $flightName . '")');
+$ace=GetPageRecord('*','fareTypeblockFlightMaster',' sectorType="'.$_SESSION['domesticorinter'].'"  and name in (select displayType from fareTypeMaster where    FIND_IN_SET("'.trim($fareType).'",fareTypeName) ) and agentTypeGroupId="'.$editresultgroup['commissionType'].'" and blockFlightId in (select id from blockFlightMaster where name="'.$flightName.'")');  
 
-	if (mysqli_num_rows($ace) > 0) {
-
-
-
-		return '1';
-	} else {
+if(mysqli_num_rows($ace)>0){ 
 
 
 
-
-
-		$ace = GetPageRecord('*', 'fareTypeblockFlightMaster', ' sectorType="' . $_SESSION['domesticorinter'] . '"  and name in (select displayType from fareTypeMaster where    FIND_IN_SET("' . trim($fareType) . '",fareTypeName) ) and agentTypeGroupId="' . $editresultgroup['commissionType'] . '" and blockFlightId in (select id from blockFlightMaster where name="' . $flightName . '")');
-
-		if (mysqli_num_rows($ace) > 0) {
+return '1';
 
 
 
-			return '1';
-		} else {
+}else{ 
 
 
 
-			return '0';
-		}
-	}
+return '0';
+
+} 
+
+
+
+}
+
+
+
 }
 
 
 
 //fare breakup function by satendra 
 
-function taxBreakupFunc($data)
-{
+function taxBreakupFunc($data){
 
-	$k = 1;
+    $k=1;
 
-	$taxBreakup = explode(',', ($data));
+	$taxBreakup = explode(',',($data));
 
-	foreach ($taxBreakup as $faredetail) {
+	foreach($taxBreakup as $faredetail){
 
-		$newfaredetail = explode('=', $faredetail);
+		$newfaredetail = explode('=',$faredetail);
 
-		if ($k == 1) {
+		if($k==1){
 
 			$bareFare = $newfaredetail[1];
+
 		}
 
-		if ($k == 2) {
+		if($k==2){
 
 			$tax = $newfaredetail[1];
+
 		}
 
-		if ($k == 3) {
+		if($k==3){
 
 			$totalFare = $newfaredetail[1];
-		}
 
+		}  
 
+		
 
-
+		
 
 		$k++;
+
 	}
 
-	return  '{"bareFare":"' . $bareFare . '","tax":"' . $tax . '","totalFare":"' . $totalFare . '"}';
+	return  '{"bareFare":"'.$bareFare.'","tax":"'.$tax.'","totalFare":"'.$totalFare.'"}';
+
+    
+
 }
 
 
 
-function changedDateFormat($datepost)
-{
+function changedDateFormat($datepost){
 
-	//$dateData = str_replace(' ', '', $datepost);
+	 //$dateData = str_replace(' ', '', $datepost);
 
-	$dateDatacls = DateTime::createFromFormat('d-m-Y', $datepost);
+	 $dateDatacls = DateTime::createFromFormat('d-m-Y', $datepost);
 
-	$newDate = $dateDatacls->format('Y-m-d');
+	 $newDate = $dateDatacls->format('Y-m-d');
 
-	return $newDate;
-}
+	 return $newDate;
 
-
-
-
-
-
-
-if (isset($_POST['username']) && isset($_POST['password'])) {
-
-
-
-	$cip = $_SERVER['REMOTE_ADDR'];
-
-	$clogin = date('Y-m-d H:i:s');
-
-	$result = mysqli_query(db(), "select * from sys_userMaster where email='" . $_POST['username'] . "' and  password='" . md5($_POST['password']) . "' and status=1 and (userType='agent') ")  or die(mysqli_error());
-
-	$number = mysqli_num_rows($result);
-
-	if ($number > 0) {
-
-
-
-		$select = '';
-
-		$where = '';
-
-		$rs = '';
-
-
-
-		$select = '*';
-
-		$where = "email='" . $_POST['username'] . "' and  password='" . md5($_POST['password']) . "'";
-
-		$rs = GetPageRecord($select, 'sys_userMaster', $where);
-
-		$userinfo = mysqli_fetch_array($rs);
-
-
-
-
-
-		$_SESSION['parentAgentId'] = $userinfo['id'];
-
-		$_SESSION['webusername'] = $userinfo['name'];
-
-		$_SESSION['webuseremail'] = $userinfo['email'];
-
-		$_SESSION['webparentid'] = $userinfo['parentId'];
-
-		$_SESSION['webuserType'] = $userinfo['userType'];
-
-
-
-
-
-		$sql_insk = "insert into sys_userLogs set  currentIp='" . $cip . "',logType='login',details='Agent Login',userId='" . $_SESSION['parentAgentId'] . "',parentId='" . $userinfo['parentId'] . "',addDate='" . time() . "'";
-
-		mysqli_query(db(), $sql_insk) or die(mysqli_error(db()));
-
-
-
-
-
-		$sql_ins = "update sys_userMaster set onlineStatus=1 where id=" . $_SESSION['parentAgentId'] . "";
-
-		mysqli_query(db(), $sql_ins) or die(mysqli_error());
-
-
-
-
-
-		header('Location: agent-dashboard.html');
-
-		exit();
-	} else {
-
-		$notlogin = 1;
-	}
-}
-
-
-
-$totalwalletBalance = 0;
-
-if ($_SESSION['parentAgentId'] != '' && $_SESSION['parentAgentId'] > 0) {
-
-	$rs8 = GetPageRecord('SUM(amount) as totalcreditAmt', 'sys_balanceSheet', 'agentId="' . $_SESSION['parentAgentId'] . '" and paymentType="Credit" ');
-
-	$agentCreditAmt = mysqli_fetch_array($rs8);
-
-
-
-	$rs8 = GetPageRecord('SUM(amount) as totaldebitAmt', 'sys_balanceSheet', 'agentId="' . $_SESSION['parentAgentId'] . '" and paymentType="Debit" ');
-
-	$agentDebitAmt = mysqli_fetch_array($rs8);
-
-
-
-	$totalwalletBalance = ($agentCreditAmt['totalcreditAmt'] - $agentDebitAmt['totaldebitAmt']);
-
-
-
-
-
-
-
-	$rs1 = GetPageRecord('*', 'sys_userMaster', 'id="' . $_SESSION['parentAgentId'] . '" and userType="agent" ');
-
-	$AgentProfileData = mysqli_fetch_array($rs1);
 }
 
 
 
 
+
+
+
+if($_POST['username']!='' && $_POST['password']!=''){
+
+
+
+$cip=$_SERVER['REMOTE_ADDR'];  
+
+$clogin=date('Y-m-d H:i:s');  
+
+$result =mysqli_query (db(),"select * from sys_userMaster where email='".$_POST['username']."' and  password='".md5($_POST['password'])."' and status=1 and (userType='agent') ")  or die(mysqli_error()); 
+
+$number =mysqli_num_rows($result);  
+
+if($number>0){  
+
+
+
+$select=''; 
+
+$where=''; 
+
+$rs=''; 
+
+ 
+
+$select='*'; 
+
+$where="email='".$_POST['username']."' and  password='".md5($_POST['password'])."'"; 
+
+$rs=GetPageRecord($select,'sys_userMaster',$where); 
+
+$userinfo=mysqli_fetch_array($rs);
+
+  
+
+
+
+$_SESSION['parentAgentId']=$userinfo['id'];  
+
+$_SESSION['webusername']=$userinfo['name'];   
+
+$_SESSION['webuseremail']=$userinfo['email'];   
+
+$_SESSION['webparentid']=$userinfo['parentId'];   
+
+$_SESSION['webuserType']=$userinfo['userType'];   
+
+
+
+
+
+$sql_insk="insert into sys_userLogs set  currentIp='".$cip."',logType='login',details='Agent Login',userId='".$_SESSION['parentAgentId']."',parentId='".$userinfo['parentId']."',addDate='".time()."'"; 
+
+mysqli_query(db(),$sql_insk) or die(mysqli_error(db())); 
+
+  
+
+
+
+$sql_ins="update sys_userMaster set onlineStatus=1 where id=".$_SESSION['parentAgentId'].""; 
+
+mysqli_query(db(),$sql_ins) or die(mysqli_error()); 
+
+  
+
+
+
+header('Location: agent-dashboard.html');
+
+exit();
+
+} else {
+
+$notlogin=1;
+
+}
+
+
+
+}
+
+
+
+$totalwalletBalance=0;
+
+if($_SESSION['parentAgentId']!='' && $_SESSION['parentAgentId']>0){
+
+$rs8=GetPageRecord('SUM(amount) as totalcreditAmt','sys_balanceSheet','agentId="'.$_SESSION['parentAgentId'].'" and paymentType="Credit" '); 
+
+$agentCreditAmt=mysqli_fetch_array($rs8); 
+
+
+
+$rs8=GetPageRecord('SUM(amount) as totaldebitAmt','sys_balanceSheet','agentId="'.$_SESSION['parentAgentId'].'" and paymentType="Debit" '); 
+
+$agentDebitAmt=mysqli_fetch_array($rs8); 
+
+
+
+$totalwalletBalance=($agentCreditAmt['totalcreditAmt']-$agentDebitAmt['totaldebitAmt']);
+
+
+
+
+
+
+
+$rs1=GetPageRecord('*','sys_userMaster','id="'.$_SESSION['parentAgentId'].'" and userType="agent" '); 
+
+$AgentProfileData=mysqli_fetch_array($rs1); 
+
+}
+
+
+
+ 
 
 
 
@@ -655,231 +729,268 @@ if ($_SESSION['parentAgentId'] != '' && $_SESSION['parentAgentId'] > 0) {
 
 
 
-function calculateflightcost($agentId, $flightName, $flightType, $fareType, $pax, $baseFare, $surcharge)
-{
+function calculateflightcost($agentId,$flightName,$flightType,$fareType,$pax,$baseFare,$surcharge){  
 
-	if ($agentId != '') {
+ if($agentId!=''){
 
+ 
 
+$a=GetPageRecord('commissionType','sys_userMaster',' id="'.decode($agentId).'"');  
 
-		$a = GetPageRecord('commissionType', 'sys_userMaster', ' id="' . decode($agentId) . '"');
+$editresultgroup=mysqli_fetch_array($a);  
 
-		$editresultgroup = mysqli_fetch_array($a);
+ 
 
+ 
 
+ 
 
+ 
 
 
 
+$finalBaseFare=$baseFare;
 
+$returnData = array($surcharge, ($baseFare+$surcharge), $finalBaseFare);
 
+ 
 
+if (strpos($fareType, '~') !== false) {
 
+$fareType=explode('~',$fareType); 
 
-		$finalBaseFare = $baseFare;
+$fareType=$fareType[1];
 
-		$returnData = array($surcharge, ($baseFare + $surcharge), $finalBaseFare);
+} 
 
 
 
-		if (strpos($fareType, '~') !== false) {
+if(trim($fareType[1])==''){
 
-			$fareType = explode('~', $fareType);
+$fareType=$fareType;
 
-			$fareType = $fareType[1];
-		}
+}
 
 
 
-		if (trim($fareType[1]) == '') {
+if($flightName!=''){
 
-			$fareType = $fareType;
-		}
+if($usethis==1){
 
+ //--------------------================Admin Markup========================-------------------
 
+$mainTax=0;
 
-		if ($flightName != '') {
+$mainFinalCost=0;
 
-			if ($usethis == 1) {
+$a=GetPageRecord('*','agent_fareTypedomesticFlightsMarkupMaster',' sectorType="'.$_SESSION['domesticorinter'].'"  and addBy=1 and agentTypeGroupId="'.$editresultgroup['commissionType'].'" and flightId in (select id from domesticFlightsMarkupMaster where name="'.$flightName.'")');   
 
-				//--------------------================Admin Markup========================-------------------
+if(mysqli_num_rows($a)>0){
 
-				$mainTax = 0;
+$res=mysqli_fetch_array($a);
 
-				$mainFinalCost = 0;
+if($res['markupType']=='Flat'){
 
-				$a = GetPageRecord('*', 'agent_fareTypedomesticFlightsMarkupMaster', ' sectorType="' . $_SESSION['domesticorinter'] . '"  and addBy=1 and agentTypeGroupId="' . $editresultgroup['commissionType'] . '" and flightId in (select id from domesticFlightsMarkupMaster where name="' . $flightName . '")');
+$taxCost=($pax*$res['markupValue']);  
 
-				if (mysqli_num_rows($a) > 0) {
+$finalCost=($pax*$res['markupValue']);  
 
-					$res = mysqli_fetch_array($a);
 
-					if ($res['markupType'] == 'Flat') {
 
-						$taxCost = ($pax * $res['markupValue']);
+$mainTax+=round($taxCost);
 
-						$finalCost = ($pax * $res['markupValue']);
+$mainFinalCost+=round($finalCost); 
 
 
 
-						$mainTax += round($taxCost);
+}
 
-						$mainFinalCost += round($finalCost);
-					}
 
 
+if($res['markupType']=='%'){
 
-					if ($res['markupType'] == '%') {
+$taxCost=($baseFare*$res['markupValue']/100);  
 
-						$taxCost = ($baseFare * $res['markupValue'] / 100);
+$finalCost=($baseFare*$res['markupValue']/100);  
 
-						$finalCost = ($baseFare * $res['markupValue'] / 100);
 
 
+$mainTax+=round($taxCost);
 
-						$mainTax += round($taxCost);
+$mainFinalCost+=round($finalCost); 
 
-						$mainFinalCost += round($finalCost);
-					}
-				} else {
 
 
+} 
 
-					$ba = GetPageRecord('*', 'agent_fareTypedomesticFlightsMarkupMaster', '  sectorType="' . $_SESSION['domesticorinter'] . '"  and addBy=1 and agentTypeGroupId="' . $editresultgroup['commissionType'] . '" and name="All" and flightId in (select id from domesticFlightsMarkupMaster where name="' . $flightName . '")');
+}else{
 
-					if (mysqli_num_rows($ba) > 0) {
 
-						$res = mysqli_fetch_array($ba);
 
+$ba=GetPageRecord('*','agent_fareTypedomesticFlightsMarkupMaster','  sectorType="'.$_SESSION['domesticorinter'].'"  and addBy=1 and agentTypeGroupId="'.$editresultgroup['commissionType'].'" and name="All" and flightId in (select id from domesticFlightsMarkupMaster where name="'.$flightName.'")');
 
+if(mysqli_num_rows($ba)>0){
 
-						if ($res['markupType'] == 'Flat') {
+$res=mysqli_fetch_array($ba);
 
-							$taxCost = ($pax * $res['markupValue']);
 
-							$finalCost = ($pax * $res['markupValue']);
 
+if($res['markupType']=='Flat'){
 
+$taxCost=($pax*$res['markupValue']);  
 
-							$mainTax += round($taxCost);
+$finalCost=($pax*$res['markupValue']);  
 
-							$mainFinalCost += round($finalCost);
-						}
 
 
+$mainTax+=round($taxCost);
 
-						if ($res['markupType'] == '%') {
+$mainFinalCost+=round($finalCost); 
 
-							$taxCost = ($baseFare * $res['markupValue'] / 100);
 
-							$finalCost = ($baseFare * $res['markupValue'] / 100);
 
+}
 
 
-							$mainTax += round($taxCost);
 
-							$mainFinalCost += round($finalCost);
-						}
-					}
-				}
+if($res['markupType']=='%'){
 
+$taxCost=($baseFare*$res['markupValue']/100);  
 
+$finalCost=($baseFare*$res['markupValue']/100);  
 
 
 
+$mainTax+=round($taxCost);
 
+$mainFinalCost+=round($finalCost); 
 
 
 
-				//--------------------================Agent Markup========================-------------------
+} 
 
+}
 
+}
 
-				$a = GetPageRecord('*', 'agent_fareTypedomesticFlightsMarkupMaster', ' sectorType="' . $_SESSION['domesticorinter'] . '"  and addBy="' . $_SESSION['parentAgentId'] . '" and agentTypeGroupId="' . $editresultgroup['commissionType'] . '" and flightId in (select id from domesticFlightsMarkupMaster where name="' . $flightName . '")');
+ 
 
-				if (mysqli_num_rows($a) > 0) {
 
-					$res = mysqli_fetch_array($a);
 
-					if ($res['B2cmarkupType'] == 'Flat') {
 
-						$taxCost = ($pax * $res['B2CmarkupValue']);
 
-						$finalCost = ($pax * $res['B2CmarkupValue']);
 
 
+//--------------------================Agent Markup========================-------------------
 
-						$mainTax += round($taxCost);
+ 
 
-						$mainFinalCost += round($finalCost);
-					}
+$a=GetPageRecord('*','agent_fareTypedomesticFlightsMarkupMaster',' sectorType="'.$_SESSION['domesticorinter'].'"  and addBy="'.$_SESSION['parentAgentId'].'" and agentTypeGroupId="'.$editresultgroup['commissionType'].'" and flightId in (select id from domesticFlightsMarkupMaster where name="'.$flightName.'")');   
 
+if(mysqli_num_rows($a)>0){
 
+$res=mysqli_fetch_array($a);
 
-					if ($res['B2cmarkupType'] == '%') {
+if($res['B2cmarkupType']=='Flat'){
 
-						$taxCost = ($baseFare * $res['B2CmarkupValue'] / 100);
+$taxCost=($pax*$res['B2CmarkupValue']);  
 
-						$finalCost = ($baseFare * $res['B2CmarkupValue'] / 100);
+$finalCost=($pax*$res['B2CmarkupValue']);  
 
 
 
-						$mainTax += round($taxCost);
+$mainTax+=round($taxCost);
 
-						$mainFinalCost += round($finalCost);
-					}
-				} else {
+$mainFinalCost+=round($finalCost); 
 
 
 
-					$ba = GetPageRecord('*', 'agent_fareTypedomesticFlightsMarkupMaster', ' sectorType="' . $_SESSION['domesticorinter'] . '"  and addBy="' . $_SESSION['parentAgentId'] . '" and agentTypeGroupId="' . $editresultgroup['commissionType'] . '" and name="All" and flightId in (select id from domesticFlightsMarkupMaster where name="' . $flightName . '")');
+}
 
-					if (mysqli_num_rows($ba) > 0) {
 
-						$res = mysqli_fetch_array($ba);
 
+if($res['B2cmarkupType']=='%'){
 
+$taxCost=($baseFare*$res['B2CmarkupValue']/100);  
 
-						if ($res['B2cmarkupType'] == 'Flat') {
+$finalCost=($baseFare*$res['B2CmarkupValue']/100);  
 
 
 
-							$taxCost = ($pax * $res['B2CmarkupValue']);
+$mainTax+=round($taxCost);
 
-							$finalCost = ($pax * $res['B2CmarkupValue']);
+$mainFinalCost+=round($finalCost); 
 
 
 
-							$mainTax += round($taxCost);
+} 
 
-							$mainFinalCost += round($finalCost);
-						}
+}else{
 
 
 
-						if ($res['B2cmarkupType'] == '%') {
+$ba=GetPageRecord('*','agent_fareTypedomesticFlightsMarkupMaster',' sectorType="'.$_SESSION['domesticorinter'].'"  and addBy="'.$_SESSION['parentAgentId'].'" and agentTypeGroupId="'.$editresultgroup['commissionType'].'" and name="All" and flightId in (select id from domesticFlightsMarkupMaster where name="'.$flightName.'")');
 
-							$taxCost = ($baseFare * $res['B2CmarkupValue'] / 100);
+if(mysqli_num_rows($ba)>0){
 
-							$finalCost = ($baseFare * $res['B2CmarkupValue'] / 100);
+$res=mysqli_fetch_array($ba);
 
 
 
-							$mainTax += round($taxCost);
+if($res['B2cmarkupType']=='Flat'){
 
-							$mainFinalCost += round($finalCost);
-						}
-					}
-				}
-			}
 
-			$returnData = array(round(($mainTax) + $surcharge), round((($mainTax) + $surcharge) + ($finalBaseFare)), ($finalBaseFare + $mainTax));
 
+$taxCost=($pax*$res['B2CmarkupValue']);  
 
+$finalCost=($pax*$res['B2CmarkupValue']);  
 
-			return $returnData;
-		}
-	}
+
+
+$mainTax+=round($taxCost);
+
+$mainFinalCost+=round($finalCost); 
+
+
+
+}
+
+
+
+if($res['B2cmarkupType']=='%'){
+
+$taxCost=($baseFare*$res['B2CmarkupValue']/100);  
+
+$finalCost=($baseFare*$res['B2CmarkupValue']/100);  
+
+
+
+$mainTax+=round($taxCost);
+
+$mainFinalCost+=round($finalCost); 
+
+
+
+} 
+
+}
+
+}
+
+
+
+ }
+
+$returnData = array(round(($mainTax)+$surcharge), round((($mainTax)+$surcharge)+($finalBaseFare)), ($finalBaseFare+$mainTax));
+
+ 
+
+return $returnData; 
+
+}
+
+}
+
 }
 
 
@@ -896,64 +1007,72 @@ function calculateflightcost($agentId, $flightName, $flightType, $fareType, $pax
 
 
 
-function calculateflightcostForAgentNetFare($agentId, $flightName, $flightType, $fareType, $pax, $baseFare, $surcharge)
-{
+function calculateflightcostForAgentNetFare($agentId,$flightName,$flightType,$fareType,$pax,$baseFare,$surcharge){  
 
 
 
-	$baseFare = round($baseFare / $pax);
+$baseFare=round($baseFare/$pax);
 
+ 
 
+ if($agentId!=''){
 
-	if ($agentId != '') {
+ 
 
+ 
 
+$a=GetPageRecord('commissionType','sys_userMaster',' id="'.$_SESSION['agentUserid'].'"');  
 
+$editresultgroup=mysqli_fetch_array($a);  
 
+ 
 
-		$a = GetPageRecord('commissionType', 'sys_userMaster', ' id="' . $_SESSION['agentUserid'] . '"');
+$ab=GetPageRecord('commissionType','sys_userMaster',' id in(select id from sys_userMaster where id="'.$_SESSION['agentUserid'].'" ) ');  
 
-		$editresultgroup = mysqli_fetch_array($a);
+$admincommisiontype=mysqli_fetch_array($ab);  
 
+ 
 
+ 
 
-		$ab = GetPageRecord('commissionType', 'sys_userMaster', ' id in(select id from sys_userMaster where id="' . $_SESSION['agentUserid'] . '" ) ');
 
-		$admincommisiontype = mysqli_fetch_array($ab);
 
+$finalBaseFare=$baseFare;
 
+$returnData = array($baseFare, ($baseFare+$surcharge), $finalBaseFare);
 
+ 
 
+if (strpos($fareType, '~') !== false) {
 
+$fareType=explode('~',$fareType); 
 
+$fareType=$fareType[1];
 
-		$finalBaseFare = $baseFare;
+} 
 
-		$returnData = array($baseFare, ($baseFare + $surcharge), $finalBaseFare);
 
 
+if(trim($fareType[1])==''){
 
-		if (strpos($fareType, '~') !== false) {
+$fareType=$fareType;
 
-			$fareType = explode('~', $fareType);
+}
 
-			$fareType = $fareType[1];
-		}
 
 
+ 
+if($usethis==1){
 
-		if (trim($fareType[1]) == '') {
+if($usethis==1){
+if($flightName!=''){
 
-			$fareType = $fareType;
-		}
+ 
 
 
 
 
-		if ($usethis == 1) {
 
-			if ($usethis == 1) {
-				if ($flightName != '') {
 
 
 
@@ -964,240 +1083,276 @@ function calculateflightcostForAgentNetFare($agentId, $flightName, $flightType, 
 
 
 
+/*========================================================Admin==============================================================================================*/
 
 
 
 
 
+ $exbaseFare=$baseFare;
 
+ 
 
-					/*========================================================Admin==============================================================================================*/
 
 
+$a=GetPageRecord('*','agent_fareTypedomesticFlightsMarkupMaster',' sectorType="'.$_SESSION['domesticorinter'].'"  and agentTypeGroupId="'.$admincommisiontype['commissionType'].'" and flightId in (select id from domesticFlightsMarkupMaster where name="'.$flightName.'")');   
 
+if(mysqli_num_rows($a)>0){
 
+$res=mysqli_fetch_array($a);
 
-					$exbaseFare = $baseFare;
 
 
+if($res['markupType']=='Flat'){
 
+$taxCost=($pax*$res['markupValue']);  
 
+$finalCost=$baseFare+($pax*$res['markupValue']); 
 
-					$a = GetPageRecord('*', 'agent_fareTypedomesticFlightsMarkupMaster', ' sectorType="' . $_SESSION['domesticorinter'] . '"  and agentTypeGroupId="' . $admincommisiontype['commissionType'] . '" and flightId in (select id from domesticFlightsMarkupMaster where name="' . $flightName . '")');
+$finalCostAdmin=$baseFare+($pax*$res['markupValue']);  
 
-					if (mysqli_num_rows($a) > 0) {
 
-						$res = mysqli_fetch_array($a);
 
 
 
-						if ($res['markupType'] == 'Flat') {
+$baseFare=$finalCostAdmin;
 
-							$taxCost = ($pax * $res['markupValue']);
+$returnData = array(round($finalCost), round($finalCost+$surcharge), $finalBaseFare); 
 
-							$finalCost = $baseFare + ($pax * $res['markupValue']);
 
-							$finalCostAdmin = $baseFare + ($pax * $res['markupValue']);
 
 
 
+//$fp = $baseFare.'----'.$flightName.'----'.$fareType.'----'.$res['markupValue'].'----'.$exbaseFare;
 
+ 
 
-							$baseFare = $finalCostAdmin;
+?>
 
-							$returnData = array(round($finalCost), round($finalCost + $surcharge), $finalBaseFare);
+<script>
 
+//alert('<?php echo $fp; ?>');
 
+</script>
 
+<?php
 
+ 
 
-							//$fp = $baseFare.'----'.$flightName.'----'.$fareType.'----'.$res['markupValue'].'----'.$exbaseFare;
+ 
+
+
+
+}
+
+
+
+if($res['markupType']=='%'){
+
+$taxCost=(($baseFare*$res['markupValue']/100));  
+
+$finalCost=$baseFare+(($baseFare*$res['markupValue']/100));  
+
+$finalCostAdmin=$baseFare+(($baseFare*$res['markupValue']/100));  
+
+
+
+$baseFare=$finalCostAdmin;
+
+ $returnData = array(round($finalCost), round($finalCost+$surcharge), $finalBaseFare); 
+
+
+
+} 
+
+}else{
+
+
+
+$ba=GetPageRecord('*','agent_fareTypedomesticFlightsMarkupMaster',' sectorType="'.$_SESSION['domesticorinter'].'"  and name="All" and agentTypeGroupId="'.$admincommisiontype['commissionType'].'" and flightId in (select id from domesticFlightsMarkupMaster where name="'.$flightName.'")');
+
+if(mysqli_num_rows($ba)>0){
+
+$res=mysqli_fetch_array($ba);
+
+
+
+if($res['markupType']=='Flat'){
+
+$taxCost=($pax*$res['markupValue']);  
+
+$finalCost=$baseFare+($pax*$res['markupValue']); 
+
+$finalCostAdmin=$baseFare+($pax*$res['markupValue']);  
+
+
+
+
+
+$baseFare=$finalCostAdmin;
+
+ $returnData = array(round($finalCost), round($finalCost+$surcharge), $finalBaseFare); 
+
+
+
+}
+
+
+
+if($res['markupType']=='%'){
+
+$taxCost=(($baseFare*$res['markupValue']/100));  
+
+$finalCost=$baseFare+(($baseFare*$res['markupValue']/100));  
+
+$finalCostAdmin=$baseFare+(($baseFare*$res['markupValue']/100));  
+
+
+
+
+
+$baseFare=$finalCostAdmin;
+
+ $returnData = array(round($finalCost), round($finalCost+$surcharge), $finalBaseFare); 
+
+
+
+} 
+
+}
+
+}
+
+
 
 
 
 ?>
 
-							<script>
-								//alert('<?php echo $fp; ?>');
-							</script>
+<script>
 
-					<?php
+  //alert('<?php echo $fp = $baseFare.'----'.$flightName.'----'.$fareType.'----'.$res['markupValue'].'----'.$exbaseFare; ?>');
 
+</script>
 
+<?php
 
+ 
 
+ 
 
+ 
 
 
-						}
 
+/*=======================================================Agent===============================================================================================================*/
 
+ 
 
-						if ($res['markupType'] == '%') {
+$a=GetPageRecord('*','agent_fareTypedomesticFlightsMarkupMaster',' sectorType="'.$_SESSION['domesticorinter'].'"  and agentTypeGroupId="'.$editresultgroup['commissionType'].'" and flightId in (select id from domesticFlightsMarkupMaster where name="'.$flightName.'")');   
 
-							$taxCost = (($baseFare * $res['markupValue'] / 100));
+if(mysqli_num_rows($a)>0){
 
-							$finalCost = $baseFare + (($baseFare * $res['markupValue'] / 100));
+$res=mysqli_fetch_array($a);
 
-							$finalCostAdmin = $baseFare + (($baseFare * $res['markupValue'] / 100));
 
 
+if($res['markupType']=='Flat'){
 
-							$baseFare = $finalCostAdmin;
+$taxCost=($pax*$res['markupValue']);  
 
-							$returnData = array(round($finalCost), round($finalCost + $surcharge), $finalBaseFare);
-						}
-					} else {
+$finalCost=$baseFare+($pax*$res['markupValue']);  
 
 
 
-						$ba = GetPageRecord('*', 'agent_fareTypedomesticFlightsMarkupMaster', ' sectorType="' . $_SESSION['domesticorinter'] . '"  and name="All" and agentTypeGroupId="' . $admincommisiontype['commissionType'] . '" and flightId in (select id from domesticFlightsMarkupMaster where name="' . $flightName . '")');
+$returnData = array(round($finalCost), round($finalCost+$surcharge), $finalBaseFare); 
 
-						if (mysqli_num_rows($ba) > 0) {
 
-							$res = mysqli_fetch_array($ba);
 
+}
 
 
-							if ($res['markupType'] == 'Flat') {
 
-								$taxCost = ($pax * $res['markupValue']);
+if($res['markupType']=='%'){
 
-								$finalCost = $baseFare + ($pax * $res['markupValue']);
+$taxCost=(($baseFare*$res['markupValue']/100));  
 
-								$finalCostAdmin = $baseFare + ($pax * $res['markupValue']);
+$finalCost=$baseFare+(($baseFare*$res['markupValue']/100));  
 
 
 
+$returnData = array(round($finalCost), round($finalCost+$surcharge), $finalBaseFare); 
 
 
-								$baseFare = $finalCostAdmin;
 
-								$returnData = array(round($finalCost), round($finalCost + $surcharge), $finalBaseFare);
-							}
+} 
 
+}else{
 
 
-							if ($res['markupType'] == '%') {
 
-								$taxCost = (($baseFare * $res['markupValue'] / 100));
+$ba=GetPageRecord('*','agent_fareTypedomesticFlightsMarkupMaster',' sectorType="'.$_SESSION['domesticorinter'].'"  and name="All" and agentTypeGroupId="'.$editresultgroup['commissionType'].'" and flightId in (select id from domesticFlightsMarkupMaster where name="'.$flightName.'")');
 
-								$finalCost = $baseFare + (($baseFare * $res['markupValue'] / 100));
+if(mysqli_num_rows($ba)>0){
 
-								$finalCostAdmin = $baseFare + (($baseFare * $res['markupValue'] / 100));
+$res=mysqli_fetch_array($ba);
 
 
 
+if($res['markupType']=='Flat'){
 
+$taxCost=($pax*$res['markupValue']);  
 
-								$baseFare = $finalCostAdmin;
+$finalCost=$baseFare+($pax*$res['markupValue']);  
 
-								$returnData = array(round($finalCost), round($finalCost + $surcharge), $finalBaseFare);
-							}
-						}
-					}
 
 
+$returnData = array(round($finalCost), round($finalCost+$surcharge), $finalBaseFare); 
 
 
 
-					?>
+}
 
-					<script>
-						//alert('<?php echo $fp = $baseFare . '----' . $flightName . '----' . $fareType . '----' . $res['markupValue'] . '----' . $exbaseFare; ?>');
-					</script>
 
-					<?php
 
+if($res['markupType']=='%'){
 
+$taxCost=(($baseFare*$res['markupValue']/100));  
 
+$finalCost=$baseFare+(($baseFare*$res['markupValue']/100));  
 
 
 
+$returnData = array(round($finalCost), round($finalCost+$surcharge), $finalBaseFare); 
 
 
 
-					/*=======================================================Agent===============================================================================================================*/
+} 
 
+}
 
+}
 
-					$a = GetPageRecord('*', 'agent_fareTypedomesticFlightsMarkupMaster', ' sectorType="' . $_SESSION['domesticorinter'] . '"  and agentTypeGroupId="' . $editresultgroup['commissionType'] . '" and flightId in (select id from domesticFlightsMarkupMaster where name="' . $flightName . '")');
 
-					if (mysqli_num_rows($a) > 0) {
 
-						$res = mysqli_fetch_array($a);
 
 
 
-						if ($res['markupType'] == 'Flat') {
 
-							$taxCost = ($pax * $res['markupValue']);
+}
 
-							$finalCost = $baseFare + ($pax * $res['markupValue']);
+}
 
 
+}
+ 
 
-							$returnData = array(round($finalCost), round($finalCost + $surcharge), $finalBaseFare);
-						}
+ 
 
+return $returnData; 
 
+}
 
-						if ($res['markupType'] == '%') {
-
-							$taxCost = (($baseFare * $res['markupValue'] / 100));
-
-							$finalCost = $baseFare + (($baseFare * $res['markupValue'] / 100));
-
-
-
-							$returnData = array(round($finalCost), round($finalCost + $surcharge), $finalBaseFare);
-						}
-					} else {
-
-
-
-						$ba = GetPageRecord('*', 'agent_fareTypedomesticFlightsMarkupMaster', ' sectorType="' . $_SESSION['domesticorinter'] . '"  and name="All" and agentTypeGroupId="' . $editresultgroup['commissionType'] . '" and flightId in (select id from domesticFlightsMarkupMaster where name="' . $flightName . '")');
-
-						if (mysqli_num_rows($ba) > 0) {
-
-							$res = mysqli_fetch_array($ba);
-
-
-
-							if ($res['markupType'] == 'Flat') {
-
-								$taxCost = ($pax * $res['markupValue']);
-
-								$finalCost = $baseFare + ($pax * $res['markupValue']);
-
-
-
-								$returnData = array(round($finalCost), round($finalCost + $surcharge), $finalBaseFare);
-							}
-
-
-
-							if ($res['markupType'] == '%') {
-
-								$taxCost = (($baseFare * $res['markupValue'] / 100));
-
-								$finalCost = $baseFare + (($baseFare * $res['markupValue'] / 100));
-
-
-
-								$returnData = array(round($finalCost), round($finalCost + $surcharge), $finalBaseFare);
-							}
-						}
-					}
-				}
-			}
-		}
-
-
-
-
-		return $returnData;
-	}
 }
 
 
@@ -1222,56 +1377,63 @@ function calculateflightcostForAgentNetFare($agentId, $flightName, $flightType, 
 
 //--------------------------------------ADMIN ONLY----------------------------------------
 
-function calculateflightcostForAgent($agentId, $flightName, $flightType, $fareType, $pax, $baseFare, $surcharge)
-{
+function calculateflightcostForAgent($agentId,$flightName,$flightType,$fareType,$pax,$baseFare,$surcharge){  
 
-	if ($agentId != '') {
+ if($agentId!=''){
 
+ 
 
+ 
 
+ 
 
+$a=GetPageRecord('commissionType','sys_userMaster',' id="'.$_SESSION['agentUserid'].'"');  
 
+$editresultgroup=mysqli_fetch_array($a);  
 
+ 
 
-		$a = GetPageRecord('commissionType', 'sys_userMaster', ' id="' . $_SESSION['agentUserid'] . '"');
+$ab=GetPageRecord('commissionType','sys_userMaster',' id in(select id from sys_userMaster where id="'.$_SESSION['agentUserid'].'" ) ');  
 
-		$editresultgroup = mysqli_fetch_array($a);
+$admincommisiontype=mysqli_fetch_array($ab);  
 
+ 
 
+ 
 
-		$ab = GetPageRecord('commissionType', 'sys_userMaster', ' id in(select id from sys_userMaster where id="' . $_SESSION['agentUserid'] . '" ) ');
 
-		$admincommisiontype = mysqli_fetch_array($ab);
 
+$finalBaseFare=$baseFare;
 
+$returnData = array($surcharge, ($baseFare+$surcharge), $finalBaseFare);
 
+ 
 
+if (strpos($fareType, '~') !== false) {
 
+$fareType=explode('~',$fareType); 
 
+$fareType=$fareType[1];
 
-		$finalBaseFare = $baseFare;
+} 
 
-		$returnData = array($surcharge, ($baseFare + $surcharge), $finalBaseFare);
 
 
+if(trim($fareType[1])==''){
 
-		if (strpos($fareType, '~') !== false) {
+$fareType=$fareType;
 
-			$fareType = explode('~', $fareType);
+}
 
-			$fareType = $fareType[1];
-		}
 
 
+if($flightName!=''){
 
-		if (trim($fareType[1]) == '') {
+ 
 
-			$fareType = $fareType;
-		}
 
 
 
-		if ($flightName != '') {
 
 
 
@@ -1283,14 +1445,15 @@ function calculateflightcostForAgent($agentId, $flightName, $flightType, $fareTy
 
 
 
+/*========================================================Admin==============================================================================================*/
 
 
 
 
 
 
-			/*========================================================Admin==============================================================================================*/
 
+ 
 
 
 
@@ -1298,245 +1461,280 @@ function calculateflightcostForAgent($agentId, $flightName, $flightType, $fareTy
 
 
 
+ $exbaseFare=$baseFare;
 
+ 
 
 
 
+$a=GetPageRecord('*','agent_fareTypedomesticFlightsMarkupMaster',' sectorType="'.$_SESSION['domesticorinter'].'"  and agentTypeGroupId="'.$admincommisiontype['commissionType'].'" and flightId in (select id from domesticFlightsMarkupMaster where name="'.$flightName.'")');   
 
+if(mysqli_num_rows($a)>0){
 
+$res=mysqli_fetch_array($a);
 
-			$exbaseFare = $baseFare;
 
 
+if($res['markupType']=='Flat'){
 
+$taxCost=($pax*$res['markupValue']);  
 
+$finalCost=$baseFare+($pax*$res['markupValue']);  
 
-			$a = GetPageRecord('*', 'agent_fareTypedomesticFlightsMarkupMaster', ' sectorType="' . $_SESSION['domesticorinter'] . '"  and agentTypeGroupId="' . $admincommisiontype['commissionType'] . '" and flightId in (select id from domesticFlightsMarkupMaster where name="' . $flightName . '")');
+$finalCostAdmin=$baseFare+($pax*$res['markupValue']);  
 
-			if (mysqli_num_rows($a) > 0) {
 
-				$res = mysqli_fetch_array($a);
 
 
 
-				if ($res['markupType'] == 'Flat') {
+$baseFare=$finalCostAdmin; 
 
-					$taxCost = ($pax * $res['markupValue']);
+$returnData = array(round($taxCost+$surcharge), round($finalCost+$surcharge), $finalBaseFare);  
 
-					$finalCost = $baseFare + ($pax * $res['markupValue']);
 
-					$finalCostAdmin = $baseFare + ($pax * $res['markupValue']);
 
 
 
+// $fp = $baseFare.'----'.$flightName.'----'.$fareType.'----'.$res['markupValue'].'----'.$exbaseFare;
 
+ 
 
-					$baseFare = $finalCostAdmin;
+?>
 
-					$returnData = array(round($taxCost + $surcharge), round($finalCost + $surcharge), $finalBaseFare);
+<script>
 
+// alert('<?php echo $fp; ?>');
 
-
-
-
-					// $fp = $baseFare.'----'.$flightName.'----'.$fareType.'----'.$res['markupValue'].'----'.$exbaseFare;
-
-
-
-					?>
-
-					<script>
-						// alert('<?php echo $fp; ?>');
-					</script>
-
-			<?php
-
-
-
-
-
-
-
-				}
-
-
-
-				if ($res['markupType'] == '%') {
-
-					$taxCost = (($baseFare * $res['markupValue'] / 100));
-
-					$finalCost = $baseFare + (($baseFare * $res['markupValue'] / 100));
-
-					$finalCostAdmin = $baseFare + (($baseFare * $res['markupValue'] / 100));
-
-
-
-					$baseFare = $finalCostAdmin;
-
-					$returnData = array(round($taxCost + $surcharge), round($finalCost + $surcharge), $finalBaseFare);
-				}
-
-
-
-				$baseFare = $finalCostAdmin;
-			} else {
-
-
-
-				$ba = GetPageRecord('*', 'agent_fareTypedomesticFlightsMarkupMaster', ' sectorType="' . $_SESSION['domesticorinter'] . '"  and name="All" and agentTypeGroupId="' . $admincommisiontype['commissionType'] . '" and flightId in (select id from domesticFlightsMarkupMaster where name="' . $flightName . '")');
-
-				if (mysqli_num_rows($ba) > 0) {
-
-					$res = mysqli_fetch_array($ba);
-
-
-
-					if ($res['markupType'] == 'Flat') {
-
-						$taxCost = ($pax * $res['markupValue']);
-
-						$finalCost = $baseFare + ($pax * $res['markupValue']);
-
-						$finalCostAdmin = $baseFare + ($pax * $res['markupValue']);
-
-
-
-
-
-						$baseFare = $finalCostAdmin;
-
-						$returnData = array(round($taxCost + $surcharge), round($finalCost + $surcharge), $finalBaseFare);
-					}
-
-
-
-					if ($res['markupType'] == '%') {
-
-						$taxCost = (($baseFare * $res['markupValue'] / 100));
-
-						$finalCost = $baseFare + (($baseFare * $res['markupValue'] / 100));
-
-						$finalCostAdmin = $baseFare + (($baseFare * $res['markupValue'] / 100));
-
-
-
-
-
-						$baseFare = $finalCostAdmin;
-
-						$returnData = array(round($taxCost + $surcharge), round($finalCost + $surcharge), $finalBaseFare);
-					}
-
-
-
-					$baseFare = $finalCostAdmin;
-				}
-			}
-
-
-
-
-
-			?>
-
-			<script>
-				//alert('<?php echo ' sectorType="' . $_SESSION['domesticorinter'] . '"  and name in (select displayType from fareTypeMaster where    FIND_IN_SET("' . trim($fareType) . '",fareTypeName) ) and agentTypeGroupId="' . $editresultgroup['commissionType'] . '" and flightId in (select id from domesticFlightsMarkupMaster where name="' . $flightName . '")' ?>');
-			</script>
+</script>
 
 <?php
 
+ 
+
+ 
+
+
+
+}
+
+
+
+if($res['markupType']=='%'){
+
+$taxCost=(($baseFare*$res['markupValue']/100));  
+
+$finalCost=$baseFare+(($baseFare*$res['markupValue']/100));  
+
+$finalCostAdmin=$baseFare+(($baseFare*$res['markupValue']/100));  
+
+
+
+$baseFare=$finalCostAdmin; 
+
+$returnData = array(round($taxCost+$surcharge), round($finalCost+$surcharge), $finalBaseFare); 
+
+} 
+
+
+
+$baseFare=$finalCostAdmin;
+
+}else{
+
+
+
+$ba=GetPageRecord('*','agent_fareTypedomesticFlightsMarkupMaster',' sectorType="'.$_SESSION['domesticorinter'].'"  and name="All" and agentTypeGroupId="'.$admincommisiontype['commissionType'].'" and flightId in (select id from domesticFlightsMarkupMaster where name="'.$flightName.'")');
+
+if(mysqli_num_rows($ba)>0){
+
+$res=mysqli_fetch_array($ba);
+
+
+
+if($res['markupType']=='Flat'){
+
+$taxCost=($pax*$res['markupValue']);  
+
+$finalCost=$baseFare+($pax*$res['markupValue']);  
+
+$finalCostAdmin=$baseFare+($pax*$res['markupValue']);  
 
 
 
 
 
+$baseFare=$finalCostAdmin; 
+
+  $returnData = array(round($taxCost+$surcharge), round($finalCost+$surcharge), $finalBaseFare); 
+
+
+
+}
+
+
+
+if($res['markupType']=='%'){
+
+$taxCost=(($baseFare*$res['markupValue']/100));  
+
+$finalCost=$baseFare+(($baseFare*$res['markupValue']/100));  
+
+$finalCostAdmin=$baseFare+(($baseFare*$res['markupValue']/100));  
 
 
 
 
 
-			/*=======================================================Agent===============================================================================================================*/
+$baseFare=$finalCostAdmin;
 
-			/*====================================================================================================================================================================================*/
+ $returnData = array(round($taxCost+$surcharge), round($finalCost+$surcharge), $finalBaseFare); 
 
+ 
 
-
-			$a = GetPageRecord('*', 'agent_fareTypedomesticFlightsMarkupMaster', ' id=0 and sectorType="' . $_SESSION['domesticorinter'] . '"  and name in (select displayType from fareTypeMaster where    FIND_IN_SET("' . trim($fareType) . '",fareTypeName) ) and agentTypeGroupId="' . $editresultgroup['commissionType'] . '" and flightId in (select id from domesticFlightsMarkupMaster where name="' . $flightName . '")');
-
-			if (mysqli_num_rows($a) > 0) {
-
-				$res = mysqli_fetch_array($a);
-
-				if ($res['markupType'] == 'Flat') {
-
-					$taxCost = ($pax * $res['markupValue']);
-
-					$finalCost = $baseFare + ($pax * $res['markupValue']);
+ 
 
 
 
-					$returnData = array(round($taxCost + $surcharge), round($finalCost + $surcharge), $finalBaseFare);
-				}
+} 
 
 
 
-				if ($res['markupType'] == '%') {
+$baseFare=$finalCostAdmin;
 
-					$taxCost = (($baseFare * $res['markupValue'] / 100));
-
-					$finalCost = $baseFare + (($baseFare * $res['markupValue'] / 100));
-
-
-
-					$returnData = array(round($taxCost + $surcharge), round($finalCost + $surcharge), $finalBaseFare);
-				}
-			} else {
-
-
-
-				$ba = GetPageRecord('*', 'agent_fareTypedomesticFlightsMarkupMaster', ' id=0 and sectorType="' . $_SESSION['domesticorinter'] . '"  and name="All" and agentTypeGroupId="' . $editresultgroup['commissionType'] . '" and flightId in (select id from domesticFlightsMarkupMaster where name="' . $flightName . '")');
-
-				if (mysqli_num_rows($ba) > 0) {
-
-					$res = mysqli_fetch_array($ba);
-
-
-
-					if ($res['markupType'] == 'Flat') {
-
-						$taxCost = ($pax * $res['markupValue']);
-
-						$finalCost = $baseFare + ($pax * $res['markupValue']);
-
-
-
-						$returnData = array(round($taxCost + $surcharge), round($finalCost + $surcharge), $finalBaseFare);
-					}
-
-
-
-					if ($res['markupType'] == '%') {
-
-						$taxCost = (($baseFare * $res['markupValue'] / 100));
-
-						$finalCost = $baseFare + (($baseFare * $res['markupValue'] / 100));
-
-
-
-						$returnData = array(round($taxCost + $surcharge), round($finalCost + $surcharge), $finalBaseFare);
-					}
-				}
-			}
-		}
+}
 
 
 
 
 
+}
 
 
-		return $returnData;
-	}
+
+
+
+?>
+
+<script>
+
+  //alert('<?php echo ' sectorType="'.$_SESSION['domesticorinter'].'"  and name in (select displayType from fareTypeMaster where    FIND_IN_SET("'.trim($fareType).'",fareTypeName) ) and agentTypeGroupId="'.$editresultgroup['commissionType'].'" and flightId in (select id from domesticFlightsMarkupMaster where name="'.$flightName.'")' ?>');
+
+</script>
+
+<?php
+
+ 
+
+ 
+
+
+
+ 
+
+
+
+/*=======================================================Agent===============================================================================================================*/
+
+/*====================================================================================================================================================================================*/
+
+ 
+
+$a=GetPageRecord('*','agent_fareTypedomesticFlightsMarkupMaster',' id=0 and sectorType="'.$_SESSION['domesticorinter'].'"  and name in (select displayType from fareTypeMaster where    FIND_IN_SET("'.trim($fareType).'",fareTypeName) ) and agentTypeGroupId="'.$editresultgroup['commissionType'].'" and flightId in (select id from domesticFlightsMarkupMaster where name="'.$flightName.'")');   
+
+if(mysqli_num_rows($a)>0){
+
+$res=mysqli_fetch_array($a);
+
+if($res['markupType']=='Flat'){
+
+$taxCost=($pax*$res['markupValue']);  
+
+$finalCost=$baseFare+($pax*$res['markupValue']);  
+
+
+
+$returnData = array(round($taxCost+$surcharge), round($finalCost+$surcharge), $finalBaseFare); 
+
+
+
+}
+
+
+
+if($res['markupType']=='%'){
+
+$taxCost=(($baseFare*$res['markupValue']/100));  
+
+$finalCost=$baseFare+(($baseFare*$res['markupValue']/100));  
+
+
+
+$returnData = array(round($taxCost+$surcharge), round($finalCost+$surcharge), $finalBaseFare); 
+
+
+
+} 
+
+}else{
+
+
+
+$ba=GetPageRecord('*','agent_fareTypedomesticFlightsMarkupMaster',' id=0 and sectorType="'.$_SESSION['domesticorinter'].'"  and name="All" and agentTypeGroupId="'.$editresultgroup['commissionType'].'" and flightId in (select id from domesticFlightsMarkupMaster where name="'.$flightName.'")');
+
+if(mysqli_num_rows($ba)>0){
+
+$res=mysqli_fetch_array($ba);
+
+
+
+if($res['markupType']=='Flat'){
+
+$taxCost=($pax*$res['markupValue']);  
+
+$finalCost=$baseFare+($pax*$res['markupValue']);  
+
+
+
+$returnData = array(round($taxCost+$surcharge), round($finalCost+$surcharge), $finalBaseFare); 
+
+
+
+}
+
+
+
+if($res['markupType']=='%'){
+
+$taxCost=(($baseFare*$res['markupValue']/100));  
+
+$finalCost=$baseFare+(($baseFare*$res['markupValue']/100));  
+
+
+
+$returnData = array(round($taxCost+$surcharge), round($finalCost+$surcharge), $finalBaseFare); 
+
+
+
+} 
+
+}
+
+}
+
+}
+
+
+
+ 
+
+ 
+
+return $returnData; 
+
+}
+
+
+
 }
 
 
@@ -1553,300 +1751,346 @@ function calculateflightcostForAgent($agentId, $flightName, $flightType, $fareTy
 
 
 
-function calculateflightcostForAgentMarkup($agentId, $flightName, $flightType, $fareType, $pax, $baseFare, $surcharge)
-{
+function calculateflightcostForAgentMarkup($agentId,$flightName,$flightType,$fareType,$pax,$baseFare,$surcharge){  
 
+ 
 
+ 
 
+ 
 
+ 
 
+$a=GetPageRecord('commissionType','sys_userMaster',' id="'.$_SESSION['agentUserid'].'"');  
 
+$editresultgroup=mysqli_fetch_array($a);  
 
+  
 
+ 
 
-	$a = GetPageRecord('commissionType', 'sys_userMaster', ' id="' . $_SESSION['agentUserid'] . '"');
+ 
 
-	$editresultgroup = mysqli_fetch_array($a);
 
 
+$finalBaseFare=$baseFare;
 
+$returnData = array(round(0)); 
 
+ 
 
+if (strpos($fareType, '~') !== false) {
 
+$fareType=explode('~',$fareType); 
 
+$fareType=$fareType[1];
 
+} 
 
-	$finalBaseFare = $baseFare;
 
-	$returnData = array(round(0));
 
+if(trim($fareType[1])==''){
 
+$fareType=$fareType;
 
-	if (strpos($fareType, '~') !== false) {
+}
 
-		$fareType = explode('~', $fareType);
 
-		$fareType = $fareType[1];
-	}
 
+//if($flightType=='D' || $flightType=='I' ){
 
+if($flightType=='W' || $flightType=='K' ){
 
-	if (trim($fareType[1]) == '') {
+ 
 
-		$fareType = $fareType;
-	}
 
 
 
-	//if($flightType=='D' || $flightType=='I' ){
 
-	if ($flightType == 'W' || $flightType == 'K') {
 
+if($usethis==1){
+ 
 
+$a=GetPageRecord('*','agent_fareTypedomesticFlightsMarkupMaster',' sectorType="'.$_SESSION['domesticorinter'].'"  and name in (select displayType from fareTypeMaster where    FIND_IN_SET("'.trim($fareType).'",fareTypeName) ) and agentTypeGroupId="'.$editresultgroup['commissionType'].'" and flightId in (select id from domesticFlightsMarkupMaster where name="'.$flightName.'")');   
 
+if(mysqli_num_rows($a)>0){
 
+$res=mysqli_fetch_array($a);
 
+if($res['markupType']=='Flat'){
 
+$taxCost=($pax*$res['markupValue']);  
 
+$finalCost=$baseFare+($pax*$res['markupValue']);  
 
-		if ($usethis == 1) {
 
 
-			$a = GetPageRecord('*', 'agent_fareTypedomesticFlightsMarkupMaster', ' sectorType="' . $_SESSION['domesticorinter'] . '"  and name in (select displayType from fareTypeMaster where    FIND_IN_SET("' . trim($fareType) . '",fareTypeName) ) and agentTypeGroupId="' . $editresultgroup['commissionType'] . '" and flightId in (select id from domesticFlightsMarkupMaster where name="' . $flightName . '")');
+$returnData = array(round($taxCost));   
 
-			if (mysqli_num_rows($a) > 0) {
 
-				$res = mysqli_fetch_array($a);
 
-				if ($res['markupType'] == 'Flat') {
+}
 
-					$taxCost = ($pax * $res['markupValue']);
 
-					$finalCost = $baseFare + ($pax * $res['markupValue']);
 
+if($res['markupType']=='%'){
 
+$taxCost=(($baseFare*$res['markupValue']/100));  
 
-					$returnData = array(round($taxCost));
-				}
+$finalCost=$baseFare+(($baseFare*$res['markupValue']/100));  
 
 
 
-				if ($res['markupType'] == '%') {
+$returnData = array(round($taxCost));  
 
-					$taxCost = (($baseFare * $res['markupValue'] / 100));
 
-					$finalCost = $baseFare + (($baseFare * $res['markupValue'] / 100));
 
+} 
 
+}else{
 
-					$returnData = array(round($taxCost));
-				}
-			} else {
 
 
+$ba=GetPageRecord('*','agent_fareTypedomesticFlightsMarkupMaster',' sectorType="'.$_SESSION['domesticorinter'].'"   and name="All" and agentTypeGroupId="'.$editresultgroup['commissionType'].'" and flightId in (select id from domesticFlightsMarkupMaster where name="'.$flightName.'")');
 
-				$ba = GetPageRecord('*', 'agent_fareTypedomesticFlightsMarkupMaster', ' sectorType="' . $_SESSION['domesticorinter'] . '"   and name="All" and agentTypeGroupId="' . $editresultgroup['commissionType'] . '" and flightId in (select id from domesticFlightsMarkupMaster where name="' . $flightName . '")');
+if(mysqli_num_rows($ba)>0){
 
-				if (mysqli_num_rows($ba) > 0) {
+$res=mysqli_fetch_array($ba);
 
-					$res = mysqli_fetch_array($ba);
 
 
+if($res['markupType']=='Flat'){
 
-					if ($res['markupType'] == 'Flat') {
+$taxCost=($pax*$res['markupValue']);  
 
-						$taxCost = ($pax * $res['markupValue']);
+$finalCost=$baseFare+($pax*$res['markupValue']);  
 
-						$finalCost = $baseFare + ($pax * $res['markupValue']);
 
 
+$returnData = array(round($taxCost));  
 
-						$returnData = array(round($taxCost));
-					}
 
 
+}
 
-					if ($res['markupType'] == '%') {
 
-						$taxCost = (($baseFare * $res['markupValue'] / 100));
 
-						$finalCost = $baseFare + (($baseFare * $res['markupValue'] / 100));
+if($res['markupType']=='%'){
 
+$taxCost=(($baseFare*$res['markupValue']/100));  
 
+$finalCost=$baseFare+(($baseFare*$res['markupValue']/100));  
 
-						$returnData = array(round($taxCost));
-					}
-				}
-			}
-		}
 
 
+$returnData = array(round($taxCost));    
 
 
 
+} 
 
+}
 
-		return $returnData;
-	}
+}
+
+ }
+
+
+
+ 
+
+ 
+
+return $returnData; 
+
+ 
+
+}
+
+}
+
+
+
+ 
+
+
+
+
+
+function getAgentCommission($baseFare,$flightName,$fareType){
+
+
+
+$returnData=0;
+
+
+
+if (strpos($fareType, '~') !== false) {
+
+$fareType=explode('~',$fareType); 
+
+$fareType=$fareType[1];
+
+} 
+
+
+
+
+
+if(trim($fareType[1])==''){
+
+$fareType=$fareType;
+
+}
+
+
+
+if($fareType=='CORP' && $flightName=='Air Asia'){
+
+
+
+//echo 'fareTypedomesticFlightsCommissionMaster','   commissionType="'.$_SESSION['commissionType'].'" and name="'.trim($fareType).'" and flightId in (select id from domesticFlightsCommissionMaster where name="'.$flightName.'")';
+
+
+
+}
+
+
+
+$a=GetPageRecord('*','fareTypedomesticFlightsCommissionMaster','   commissionType="'.$_SESSION['commissionType'].'" and flightId in (select id from domesticFlightsCommissionMaster where name="'.$flightName.'")'); 
+
+if(mysqli_num_rows($a)>0){
+
+$res=mysqli_fetch_array($a); 
+
+
+
+
+
+
+
+if($res['markupType']=='Flat'){
+
+$finalCost=$res['markupValue']; 
+
+$returnData = $finalCost;  
+
+}
+
+
+
+if($res['markupType']=='%'){
+
+$finalCost=(($baseFare*$res['markupValue']/100)); 
+
+$returnData = $finalCost;  
+
+} 
+
+
+
+
+
+
+
+if($res['cashBackType']=='Flat' && $res['cashBackValue']>0){
+
+$finalCost+=$res['cashBackValue']; 
+
+$returnData=$finalCost;  
+
+}
+
+
+
+if($res['cashBackType']=='%' && $res['cashBackValue']>0){
+
+$finalCost+=(($baseFare*$res['cashBackValue']/100)); 
+
+$returnData=$finalCost;  
+
+} 
+
+
+
+ 
+
+}else{
+
+ 
+
+$ba=GetPageRecord('*','fareTypedomesticFlightsCommissionMaster','   commissionType="'.$_SESSION['commissionType'].'" and name="All" and flightId in (select id from domesticFlightsCommissionMaster where name="'.$flightName.'")');
+
+if(mysqli_num_rows($ba)>0){
+
+$res=mysqli_fetch_array($ba);
+
+
+
+if($res['markupType']=='Flat'){
+
+$finalCost=$res['markupValue']; 
+
+$returnData = $finalCost;  
+
+}
+
+
+
+if($res['markupType']=='%'){
+
+$finalCost=(($baseFare*$res['markupValue']/100)); 
+
+$returnData = $finalCost;  
+
+} 
+
+
+
+
+
+if($res['cashBackType']=='Flat' && $res['cashBackValue']>0){
+
+$finalCost+=$res['cashBackValue']; 
+
+$returnData=$finalCost;  
+
+}
+
+
+
+if($res['cashBackType']=='%' && $res['cashBackValue']>0){
+
+$finalCost+=(($baseFare*$res['cashBackValue']/100)); 
+
+$returnData=$finalCost;  
+
+} 
+
+
+
+
+
+}
+
 }
 
 
 
 
 
+ 
 
 
 
 
-function getAgentCommission($baseFare, $flightName, $fareType)
-{
 
+return $returnData; 
 
 
-	$returnData = 0;
 
 
 
-	if (strpos($fareType, '~') !== false) {
-
-		$fareType = explode('~', $fareType);
-
-		$fareType = $fareType[1];
-	}
-
-
-
-
-
-	if (trim($fareType[1]) == '') {
-
-		$fareType = $fareType;
-	}
-
-
-
-	if ($fareType == 'CORP' && $flightName == 'Air Asia') {
-
-
-
-		//echo 'fareTypedomesticFlightsCommissionMaster','   commissionType="'.$_SESSION['commissionType'].'" and name="'.trim($fareType).'" and flightId in (select id from domesticFlightsCommissionMaster where name="'.$flightName.'")';
-
-
-
-	}
-
-
-
-	$a = GetPageRecord('*', 'fareTypedomesticFlightsCommissionMaster', '   commissionType="' . $_SESSION['commissionType'] . '" and flightId in (select id from domesticFlightsCommissionMaster where name="' . $flightName . '")');
-
-	if (mysqli_num_rows($a) > 0) {
-
-		$res = mysqli_fetch_array($a);
-
-
-
-
-
-
-
-		if ($res['markupType'] == 'Flat') {
-
-			$finalCost = $res['markupValue'];
-
-			$returnData = $finalCost;
-		}
-
-
-
-		if ($res['markupType'] == '%') {
-
-			$finalCost = (($baseFare * $res['markupValue'] / 100));
-
-			$returnData = $finalCost;
-		}
-
-
-
-
-
-
-
-		if ($res['cashBackType'] == 'Flat' && $res['cashBackValue'] > 0) {
-
-			$finalCost += $res['cashBackValue'];
-
-			$returnData = $finalCost;
-		}
-
-
-
-		if ($res['cashBackType'] == '%' && $res['cashBackValue'] > 0) {
-
-			$finalCost += (($baseFare * $res['cashBackValue'] / 100));
-
-			$returnData = $finalCost;
-		}
-	} else {
-
-
-
-		$ba = GetPageRecord('*', 'fareTypedomesticFlightsCommissionMaster', '   commissionType="' . $_SESSION['commissionType'] . '" and name="All" and flightId in (select id from domesticFlightsCommissionMaster where name="' . $flightName . '")');
-
-		if (mysqli_num_rows($ba) > 0) {
-
-			$res = mysqli_fetch_array($ba);
-
-
-
-			if ($res['markupType'] == 'Flat') {
-
-				$finalCost = $res['markupValue'];
-
-				$returnData = $finalCost;
-			}
-
-
-
-			if ($res['markupType'] == '%') {
-
-				$finalCost = (($baseFare * $res['markupValue'] / 100));
-
-				$returnData = $finalCost;
-			}
-
-
-
-
-
-			if ($res['cashBackType'] == 'Flat' && $res['cashBackValue'] > 0) {
-
-				$finalCost += $res['cashBackValue'];
-
-				$returnData = $finalCost;
-			}
-
-
-
-			if ($res['cashBackType'] == '%' && $res['cashBackValue'] > 0) {
-
-				$finalCost += (($baseFare * $res['cashBackValue'] / 100));
-
-				$returnData = $finalCost;
-			}
-		}
-	}
-
-
-
-
-
-
-
-
-
-
-
-	return $returnData;
 }
 
 
@@ -1913,16 +2157,15 @@ function getAgentCommission($baseFare, $flightName, $fareType)
 
 //--------------------------------------ADMIN + AGENT----------------------------------------
 
-function calculatehotelcost($agentId, $hotelName, $baseFare, $hotelMasterTax)
-{
+function calculatehotelcost($agentId,$hotelName,$baseFare,$hotelMasterTax){ 
 
-	$totalMarkup = 0;
+$totalMarkup=0;
 
-	$markupStatus = 0;
+$markupStatus=0;
 
-	$markupAdmin = 0;
+$markupAdmin=0;
 
-	$markupAgent = 0;
+$markupAgent=0;
 
 
 
@@ -1930,56 +2173,59 @@ function calculatehotelcost($agentId, $hotelName, $baseFare, $hotelMasterTax)
 
 
 
-	if ($agentId != '') {
+ if($agentId!=''){
 
+ 
 
+$returnData = array(($baseFare+$hotelMasterTax),'0',($baseFare+$tax),'0','0');
 
-		$returnData = array(($baseFare + $hotelMasterTax), '0', ($baseFare + $tax), '0', '0');
+  
 
+ 
 
 
 
+ //--------------------================Admin Markup========================-------------------
 
 
 
-		//--------------------================Admin Markup========================-------------------
+$a=GetPageRecord('*','fareTypedomesticHotelMarkupMaster','  1 and   addBy=1 and hotelId in (select id from domesticHotelMarkupMaster where name="'.$hotelName.'") order by id desc');   
 
+if(mysqli_num_rows($a)>0){
 
+$markupStatus=1;
 
-		$a = GetPageRecord('*', 'fareTypedomesticHotelMarkupMaster', '  1 and   addBy=1 and hotelId in (select id from domesticHotelMarkupMaster where name="' . $hotelName . '") order by id desc');
+$res=mysqli_fetch_array($a);
 
-		if (mysqli_num_rows($a) > 0) {
 
-			$markupStatus = 1;
 
-			$res = mysqli_fetch_array($a);
+if($res['markupType']=='Flat'){
 
+$taxCost=($res['markupValue']);   
 
 
-			if ($res['markupType'] == 'Flat') {
 
-				$taxCost = ($res['markupValue']);
+$totalMarkup+=round($taxCost); 
 
+$markupAdmin=round($taxCost);
 
+}
 
-				$totalMarkup += round($taxCost);
 
-				$markupAdmin = round($taxCost);
-			}
 
+if($res['markupType']=='%'){
 
+$taxCost=($baseFare*$res['markupValue']/100);   
 
-			if ($res['markupType'] == '%') {
 
-				$taxCost = ($baseFare * $res['markupValue'] / 100);
 
+$totalMarkup+=round($taxCost); 
 
+$markupAdmin=round($taxCost);
 
-				$totalMarkup += round($taxCost);
+} 
 
-				$markupAdmin = round($taxCost);
-			}
-		} else {
+}else{
 
 
 
@@ -1987,142 +2233,164 @@ function calculatehotelcost($agentId, $hotelName, $baseFare, $hotelMasterTax)
 
 
 
-			$a = GetPageRecord('*', 'fareTypedomesticHotelMarkupMaster', ' 1 and  addBy=1 and hotelId in (select id from domesticHotelMarkupMaster where name="All") order by id desc');
+$a=GetPageRecord('*','fareTypedomesticHotelMarkupMaster',' 1 and  addBy=1 and hotelId in (select id from domesticHotelMarkupMaster where name="All") order by id desc');   
 
-			if (mysqli_num_rows($a) > 0) {
+if(mysqli_num_rows($a)>0){
 
-				$markupStatus = 1;
+$markupStatus=1;
 
-				$res = mysqli_fetch_array($a);
+$res=mysqli_fetch_array($a);
 
 
 
-				if ($res['markupType'] == 'Flat') {
+if($res['markupType']=='Flat'){
 
-					$taxCost = ($res['markupValue']);
+$taxCost=($res['markupValue']);   
 
 
 
-					$totalMarkup += round($taxCost);
+$totalMarkup+=round($taxCost); 
 
-					$markupAdmin = round($taxCost);
-				}
+$markupAdmin=round($taxCost);
 
+}
 
 
-				if ($res['markupType'] == '%') {
 
-					$taxCost = ($baseFare * $res['markupValue'] / 100);
+if($res['markupType']=='%'){
 
+$taxCost=($baseFare*$res['markupValue']/100);   
 
 
-					$totalMarkup += round($taxCost);
 
-					$markupAdmin = round($taxCost);
-				}
-			}
-		}
+$totalMarkup+=round($taxCost); 
 
+$markupAdmin=round($taxCost);
 
+} 
 
 
 
 
 
+}
 
+}
 
-		//--------------------================Agent Markup========================-------------------
+ 
 
 
 
-		$a = GetPageRecord('*', 'fareTypedomesticHotelMarkupMaster', ' addBy="' . $_SESSION['parentid'] . '" and hotelId in (select id from domesticHotelMarkupMaster where name="' . $hotelName . '") order by id desc');
 
-		if (mysqli_num_rows($a) > 0) {
 
-			$markupStatus = 1;
 
-			$res = mysqli_fetch_array($a);
 
-			if ($res['markupType'] == 'Flat') {
+//--------------------================Agent Markup========================-------------------
 
-				$taxCost = ($res['markupValue']);
+ 
 
+$a=GetPageRecord('*','fareTypedomesticHotelMarkupMaster',' addBy="'.$_SESSION['parentid'].'" and hotelId in (select id from domesticHotelMarkupMaster where name="'.$hotelName.'") order by id desc');   
 
+if(mysqli_num_rows($a)>0){ 
 
-				$totalMarkup += round($taxCost);
+$markupStatus=1;
 
-				$markupAgent = round($taxCost);
-			}
+$res=mysqli_fetch_array($a);
 
+if($res['markupType']=='Flat'){
 
+$taxCost=($res['markupValue']);   
 
-			if ($res['markupType'] == '%') {
 
-				$taxCost = ($baseFare * $res['markupValue'] / 100);
 
+$totalMarkup+=round($taxCost); 
 
+$markupAgent=round($taxCost);
 
-				$totalMarkup += round($taxCost);
+}
 
-				$markupAgent = round($taxCost);
-			}
-		} else {
 
 
+if($res['markupType']=='%'){
 
-			$a = GetPageRecord('*', 'fareTypedomesticHotelMarkupMaster', ' addBy="' . $_SESSION['parentid'] . '" and hotelId in (select id from domesticHotelMarkupMaster where name="All") order by id desc');
+$taxCost=($baseFare*$res['markupValue']/100);  
 
-			if (mysqli_num_rows($a) > 0) {
 
 
+$totalMarkup+=round($taxCost); 
 
+$markupAgent=round($taxCost);
 
+} 
 
-				$markupStatus = 1;
+ }else{ 
 
-				$res = mysqli_fetch_array($a);
 
-				if ($res['markupType'] == 'Flat') {
 
-					$taxCost = ($res['markupValue']);
+$a=GetPageRecord('*','fareTypedomesticHotelMarkupMaster',' addBy="'.$_SESSION['parentid'].'" and hotelId in (select id from domesticHotelMarkupMaster where name="All") order by id desc');   
 
+if(mysqli_num_rows($a)>0){
 
 
-					$totalMarkup += round($taxCost);
 
-					$markupAgent = round($taxCost);
-				}
 
 
+$markupStatus=1;
 
-				if ($res['markupType'] == '%') {
+$res=mysqli_fetch_array($a);
 
-					$taxCost = ($baseFare * $res['markupValue'] / 100);
+if($res['markupType']=='Flat'){
 
+$taxCost=($res['markupValue']);   
 
 
-					$totalMarkup += round($taxCost);
 
-					$markupAgent = round($taxCost);
-				}
-			}
-		}
+$totalMarkup+=round($taxCost); 
 
+$markupAgent=round($taxCost);
 
+}
 
-		if ($markupStatus == 1) {
 
-			$basicCost = ($baseFare + $hotelMasterTax);
 
-			$finalCost = round(($baseFare + $hotelMasterTax) + $totalMarkup);
+if($res['markupType']=='%'){
 
+$taxCost=($baseFare*$res['markupValue']/100);  
 
 
-			$returnData = array($basicCost, $totalMarkup, $finalCost, $markupAgent, $markupAdmin);
-		}
 
-		return $returnData;
-	}
+$totalMarkup+=round($taxCost); 
+
+$markupAgent=round($taxCost);
+
+} 
+
+
+
+}
+
+ }
+
+
+
+ if($markupStatus==1){
+
+ $basicCost=($baseFare+$hotelMasterTax);
+
+ $finalCost=round(($baseFare+$hotelMasterTax)+$totalMarkup);
+
+ 
+
+$returnData = array($basicCost,$totalMarkup,$finalCost,$markupAgent,$markupAdmin);
+
+ }
+
+return $returnData; 
+
+ 
+
+}
+
 }
 
 
@@ -2149,16 +2417,15 @@ function calculatehotelcost($agentId, $hotelName, $baseFare, $hotelMasterTax)
 
 
 
-function calculatehotelcostagent($agentId, $hotelName, $baseFare, $hotelMasterTax)
-{
+ function calculatehotelcostagent($agentId,$hotelName,$baseFare,$hotelMasterTax){ 
 
-	$totalMarkup = 0;
+$totalMarkup=0;
 
-	$markupStatus = 0;
+$markupStatus=0;
 
-	$markupAdmin = 0;
+$markupAdmin=0;
 
-	$markupAgent = 0;
+$markupAgent=0;
 
 
 
@@ -2166,112 +2433,126 @@ function calculatehotelcostagent($agentId, $hotelName, $baseFare, $hotelMasterTa
 
 
 
-	if ($agentId != '') {
+ if($agentId!=''){
 
+  
 
+  
 
+ 
 
+ 
 
 
 
+//--------------------================Agent Markup========================-------------------
 
+ 
 
+$a=GetPageRecord('*','fareTypedomesticHotelMarkupMaster',' addBy="'.$_SESSION['parentid'].'" and hotelId in (select id from domesticHotelMarkupMaster where name="'.$hotelName.'") order by id desc');   
 
+if(mysqli_num_rows($a)>0){ 
 
-		//--------------------================Agent Markup========================-------------------
 
 
 
-		$a = GetPageRecord('*', 'fareTypedomesticHotelMarkupMaster', ' addBy="' . $_SESSION['parentid'] . '" and hotelId in (select id from domesticHotelMarkupMaster where name="' . $hotelName . '") order by id desc');
 
-		if (mysqli_num_rows($a) > 0) {
+$markupStatus=1;
 
+$res=mysqli_fetch_array($a);
 
+if($res['markupType']=='Flat'){
 
+$taxCost=($res['markupValue']);   
 
 
-			$markupStatus = 1;
 
-			$res = mysqli_fetch_array($a);
+$totalMarkup+=round($taxCost); 
 
-			if ($res['markupType'] == 'Flat') {
+$markupAgent=round($taxCost);
 
-				$taxCost = ($res['markupValue']);
+}
 
 
 
-				$totalMarkup += round($taxCost);
+if($res['markupType']=='%'){
 
-				$markupAgent = round($taxCost);
-			}
+$taxCost=($baseFare*$res['markupValue']/100);  
 
 
 
-			if ($res['markupType'] == '%') {
+$totalMarkup+=round($taxCost); 
 
-				$taxCost = ($baseFare * $res['markupValue'] / 100);
+$markupAgent=round($taxCost);
 
+} 
 
+ }else{ 
 
-				$totalMarkup += round($taxCost);
 
-				$markupAgent = round($taxCost);
-			}
-		} else {
 
+$a=GetPageRecord('*','fareTypedomesticHotelMarkupMaster',' addBy="'.$_SESSION['parentid'].'" and hotelId in (select id from domesticHotelMarkupMaster where name="All") order by id desc');   
 
+if(mysqli_num_rows($a)>0){
 
-			$a = GetPageRecord('*', 'fareTypedomesticHotelMarkupMaster', ' addBy="' . $_SESSION['parentid'] . '" and hotelId in (select id from domesticHotelMarkupMaster where name="All") order by id desc');
 
-			if (mysqli_num_rows($a) > 0) {
 
+$markupStatus=1;
 
+$res=mysqli_fetch_array($a);
 
-				$markupStatus = 1;
+if($res['markupType']=='Flat'){
 
-				$res = mysqli_fetch_array($a);
+$taxCost=($res['markupValue']);   
 
-				if ($res['markupType'] == 'Flat') {
 
-					$taxCost = ($res['markupValue']);
 
+$totalMarkup+=round($taxCost); 
 
+$markupAgent=round($taxCost);
 
-					$totalMarkup += round($taxCost);
+}
 
-					$markupAgent = round($taxCost);
-				}
 
 
+if($res['markupType']=='%'){
 
-				if ($res['markupType'] == '%') {
+$taxCost=($baseFare*$res['markupValue']/100);  
 
-					$taxCost = ($baseFare * $res['markupValue'] / 100);
 
 
+$totalMarkup+=round($taxCost); 
 
-					$totalMarkup += round($taxCost);
+$markupAgent=round($taxCost);
 
-					$markupAgent = round($taxCost);
-				}
-			}
-		}
+} 
 
 
 
-		if ($markupStatus == 1) {
+}
 
-			$basicCost = ($baseFare + $hotelMasterTax);
+ }
 
-			$finalCost = round(($baseFare + $hotelMasterTax) + $totalMarkup);
 
 
+ if($markupStatus==1){
 
-			$returnData = array($basicCost, $totalMarkup, $finalCost, $markupAgent, $markupAdmin);
-		}
+ $basicCost=($baseFare+$hotelMasterTax);
 
-		return $returnData;
-	}
+ $finalCost=round(($baseFare+$hotelMasterTax)+$totalMarkup);
+
+ 
+
+$returnData = array($basicCost,$totalMarkup,$finalCost,$markupAgent,$markupAdmin);
+
+ }
+
+return $returnData; 
+
+ 
+
+}
+
 }
 
 
@@ -2280,82 +2561,98 @@ function calculatehotelcostagent($agentId, $hotelName, $baseFare, $hotelMasterTa
 
 
 
-function getHotelAgentCommission($baseFare, $hotelName)
-{
+function getHotelAgentCommission($baseFare,$hotelName){
+
+ 
+
+
+
+$a=GetPageRecord('*','agent_fareTypedomesticHotelsCommissionMaster',' agentId="'.$_SESSION['parentAgentId'].'" and hotelId in (select id from domesticHotelsCommissionMaster where name="'.$hotelName.'")'); 
+
+if(mysqli_num_rows($a)>0){
+
+$res=mysqli_fetch_array($a); 
 
 
 
 
 
-	$a = GetPageRecord('*', 'agent_fareTypedomesticHotelsCommissionMaster', ' agentId="' . $_SESSION['parentAgentId'] . '" and hotelId in (select id from domesticHotelsCommissionMaster where name="' . $hotelName . '")');
-
-	if (mysqli_num_rows($a) > 0) {
-
-		$res = mysqli_fetch_array($a);
 
 
+if($res['markupType']=='Flat'){
 
+$finalCost=$res['markupValue']; 
 
+$returnData = $finalCost;  
 
-
-
-		if ($res['markupType'] == 'Flat') {
-
-			$finalCost = $res['markupValue'];
-
-			$returnData = $finalCost;
-		}
+}
 
 
 
-		if ($res['markupType'] == '%') {
+if($res['markupType']=='%'){
 
-			$finalCost = (($baseFare * $res['markupValue'] / 100));
+$finalCost=(($baseFare*$res['markupValue']/100)); 
 
-			$returnData = $finalCost;
-		}
-	} else {
+$returnData = $finalCost;  
 
-
-
-		$ba = GetPageRecord('*', 'agent_fareTypedomesticHotelsCommissionMaster', ' agentId="' . $_SESSION['parentAgentId'] . '" and hotelId in (select id from domesticHotelsCommissionMaster where name="All")');
-
-		if (mysqli_num_rows($ba) > 0) {
-
-			$res = mysqli_fetch_array($ba);
+} 
 
 
 
-			if ($res['markupType'] == 'Flat') {
+ 
 
-				$finalCost = $res['markupValue'];
+}else{
 
-				$returnData = $finalCost;
-			}
+ 
 
+$ba=GetPageRecord('*','agent_fareTypedomesticHotelsCommissionMaster',' agentId="'.$_SESSION['parentAgentId'].'" and hotelId in (select id from domesticHotelsCommissionMaster where name="All")');
 
+if(mysqli_num_rows($ba)>0){
 
-			if ($res['markupType'] == '%') {
-
-				$finalCost = (($baseFare * $res['markupValue'] / 100));
-
-				$returnData = $finalCost;
-			}
-		}
-	}
+$res=mysqli_fetch_array($ba);
 
 
 
-	if ($returnData == '' || $returnData == 0) {
+if($res['markupType']=='Flat'){
 
-		$returnData = 0;
-	}
+$finalCost=$res['markupValue']; 
+
+$returnData = $finalCost;  
+
+}
+
+
+
+if($res['markupType']=='%'){
+
+$finalCost=(($baseFare*$res['markupValue']/100)); 
+
+$returnData = $finalCost;  
+
+} 
+
+}
+
+}
+
+
+
+if($returnData=='' || $returnData==0){
+
+$returnData=0;
+
+}
 
 
 
 
 
-	return $returnData;
+return $returnData; 
+
+
+
+
+
 }
 
 
@@ -2364,134 +2661,145 @@ function getHotelAgentCommission($baseFare, $hotelName)
 
 
 
-function getfaretypedetails($flightname, $faretype)
-{
+function getfaretypedetails($flightname,$faretype){
 
 
 
-	$fareType = explode('~', $faretype);
+$fareType=explode('~',$faretype); 
 
-	$fareType = $fareType[1];
-
-
+$fareType=$fareType[1];
 
 
 
-	if (trim($fareType[1]) == '') {
-
-		$fareType = $faretype;
-	}
 
 
+if(trim($fareType[1])==''){
 
-	$a = GetPageRecord('*', 'fareTypeMaster', ' 1 and  FIND_IN_SET("' . trim($fareType) . '",fareTypeName) and flightName="' . trim($flightname) . '" ');
+$fareType=$faretype;
 
-	$datares = mysqli_fetch_array($a);
+}
 
 
 
-	if ($datares['description'] != '') {
+$a=GetPageRecord('*','fareTypeMaster',' 1 and  FIND_IN_SET("'.trim($fareType).'",fareTypeName) and flightName="'.trim($flightname).'" '); 
 
-		return stripslashes($datares['description']);
-	}
+$datares=mysqli_fetch_array($a); 
+
+
+
+if($datares['description']!=''){
+
+return stripslashes($datares['description']);
+
+}  
+
+} 
+
+
+
+
+
+function getfaretypedisplayname($flightname,$faretype){
+
+
+
+$fareType=explode('~',$faretype); 
+
+$fareType=$fareType[1];
+
+
+
+if(trim($fareType[1])==''){
+
+$fareType=$faretype;
+
+}
+
+
+
+$a=GetPageRecord('*','fareTypeMaster',' 1 and  FIND_IN_SET("'.trim($fareType).'",fareTypeName) and flightName="'.trim($flightname).'" '); 
+
+$datares=mysqli_fetch_array($a); 
+
+
+
+if($datares['displayType']!=''){
+
+return stripslashes($datares['displayType']);
+
+}  
+
 }
 
 
 
 
 
-function getfaretypedisplayname($flightname, $faretype)
-{
+function getfaretypedisplaycolor($flightname,$faretype){
 
 
 
-	$fareType = explode('~', $faretype);
+$fareType=explode('~',$faretype); 
 
-	$fareType = $fareType[1];
-
-
-
-	if (trim($fareType[1]) == '') {
-
-		$fareType = $faretype;
-	}
+$fareType=$fareType[1];
 
 
 
-	$a = GetPageRecord('*', 'fareTypeMaster', ' 1 and  FIND_IN_SET("' . trim($fareType) . '",fareTypeName) and flightName="' . trim($flightname) . '" ');
+if(trim($fareType[1])==''){
 
-	$datares = mysqli_fetch_array($a);
+$fareType=$faretype;
 
-
-
-	if ($datares['displayType'] != '') {
-
-		return stripslashes($datares['displayType']);
-	}
 }
 
 
 
 
 
-function getfaretypedisplaycolor($flightname, $faretype)
-{
+$a=GetPageRecord('*','fareTypeMaster',' 1 and  FIND_IN_SET("'.trim($fareType).'",fareTypeName) and flightName="'.trim($flightname).'" '); 
+
+$datares=mysqli_fetch_array($a); 
 
 
 
-	$fareType = explode('~', $faretype);
+if($datares['displayType']!=''){
 
-	$fareType = $fareType[1];
+return stripslashes($datares['displayColor']);
 
+}  
 
-
-	if (trim($fareType[1]) == '') {
-
-		$fareType = $faretype;
-	}
-
-
-
-
-
-	$a = GetPageRecord('*', 'fareTypeMaster', ' 1 and  FIND_IN_SET("' . trim($fareType) . '",fareTypeName) and flightName="' . trim($flightname) . '" ');
-
-	$datares = mysqli_fetch_array($a);
-
-
-
-	if ($datares['displayType'] != '') {
-
-		return stripslashes($datares['displayColor']);
-	}
-}
+} 
+ 
 
 
 
 
+function offlinehotel($hotelName){  
+$returnData = 'on'; 
 
-function offlinehotel($hotelName)
-{
-	$returnData = 'on';
+$a=GetPageRecord('*','offlinehotelMaster',' name="'.trim($hotelName).'" ');   
 
-	$a = GetPageRecord('*', 'offlinehotelMaster', ' name="' . trim($hotelName) . '" ');
+if(mysqli_num_rows($a)>0){ 
 
-	if (mysqli_num_rows($a) > 0) {
+$returnData = 'off';  
 
-		$returnData = 'off';
-	} else {
+}else{ 
 
-		$ba = GetPageRecord('*', 'offlinehotelMaster', ' name="All" ');
+$ba=GetPageRecord('*','offlinehotelMaster',' name="All" ');
 
-		if (mysqli_num_rows($ba) > 0) {
+if(mysqli_num_rows($ba)>0){ 
 
-			$returnData = 'off';
-		}
-	}
+$returnData = 'off'; 
+
+} 
+
+}  
+
+ 
+
+return $returnData; 
 
 
 
-	return $returnData;
 }
 
 
@@ -2499,47 +2807,51 @@ function offlinehotel($hotelName)
 //-------------------Agent Fixed Makup---------------------
 
 
+ 
 
+function agentfixmarkup($agentId,$flightName,$flightType,$fareType,$pax,$baseFare,$surcharge){  
 
-function agentfixmarkup($agentId, $flightName, $flightType, $fareType, $pax, $baseFare, $surcharge)
-{
+ if($agentId!=''){ 
 
-	if ($agentId != '') {
+if($flightName!=''){ 
 
-		if ($flightName != '') {
+$a=GetPageRecord('*','sys_flightName',' name="'.$flightName.'"');  
+$resflight=mysqli_fetch_array($a); 
+ 
+ //--------------------================Admin Markup========================-------------------
 
-			$a = GetPageRecord('*', 'sys_flightName', ' name="' . $flightName . '"');
-			$resflight = mysqli_fetch_array($a);
+$mainTax=0; 
+$mainFinalCost=0;
 
-			//--------------------================Admin Markup========================-------------------
+if($_SESSION['domesticorinter']=='I'){	 
+$a=GetPageRecord('*','fixedMarkupAgent',' agentId="'.$_SESSION['agentUserid'].'" and flightId=30'); 
+} else { 
+$a=GetPageRecord('*','fixedMarkupAgent',' agentId="'.$_SESSION['agentUserid'].'" and flightId="'.$resflight['id'].'"');
+}
 
-			$mainTax = 0;
-			$mainFinalCost = 0;
+  
+if(mysqli_num_rows($a)>0){ 
+$res=mysqli_fetch_array($a);
 
-			if ($_SESSION['domesticorinter'] == 'I') {
-				$a = GetPageRecord('*', 'fixedMarkupAgent', ' agentId="' . $_SESSION['agentUserid'] . '" and flightId=30');
-			} else {
-				$a = GetPageRecord('*', 'fixedMarkupAgent', ' agentId="' . $_SESSION['agentUserid'] . '" and flightId="' . $resflight['id'] . '"');
-			}
+if($res['type']=='0'){ 
+$markup=($pax*$res['value']);   
+}
+ 
+if($res['type']=='1'){ 
+$markup=round($baseFare*$res['value']/100);    
+} 
 
+}else{
 
-			if (mysqli_num_rows($a) > 0) {
-				$res = mysqli_fetch_array($a);
+$markup=0;
 
-				if ($res['type'] == '0') {
-					$markup = ($pax * $res['value']);
-				}
+ } 
+return $markup; 
 
-				if ($res['type'] == '1') {
-					$markup = round($baseFare * $res['value'] / 100);
-				}
-			} else {
+}
 
-				$markup = 0;
-			}
-			return $markup;
-		}
-	}
+}
+
 }
 
 
@@ -2559,56 +2871,63 @@ function agentfixmarkup($agentId, $flightName, $flightType, $fareType, $pax, $ba
 
 
 
-function makecommission($agentId, $flightName, $flightType, $fareType, $pax, $baseFare, $surcharge)
-{
+function makecommission($agentId,$flightName,$flightType,$fareType,$pax,$baseFare,$surcharge){  
 
-	if ($agentId != '') {
+ if($agentId!=''){
 
+ 
 
+ 
 
+ 
 
+$a=GetPageRecord('commissionType','sys_userMaster',' id="'.$_SESSION['agentUserid'].'"');  
 
+$editresultgroup=mysqli_fetch_array($a);  
 
+ 
 
-		$a = GetPageRecord('commissionType', 'sys_userMaster', ' id="' . $_SESSION['agentUserid'] . '"');
+$ab=GetPageRecord('commissionType','sys_userMaster',' id in(select id from sys_userMaster where id="'.$_SESSION['agentUserid'].'" ) ');  
 
-		$editresultgroup = mysqli_fetch_array($a);
+$admincommisiontype=mysqli_fetch_array($ab);  
 
+ 
 
+ 
 
-		$ab = GetPageRecord('commissionType', 'sys_userMaster', ' id in(select id from sys_userMaster where id="' . $_SESSION['agentUserid'] . '" ) ');
 
-		$admincommisiontype = mysqli_fetch_array($ab);
 
+$finalBaseFare=$baseFare;
 
+$returnData = array(0,0,0);
 
+ 
 
+if (strpos($fareType, '~') !== false) {
 
+$fareType=explode('~',$fareType); 
 
+$fareType=$fareType[1];
 
-		$finalBaseFare = $baseFare;
+} 
 
-		$returnData = array(0, 0, 0);
 
 
+if(trim($fareType[1])==''){
 
-		if (strpos($fareType, '~') !== false) {
+$fareType=$fareType;
 
-			$fareType = explode('~', $fareType);
+}
 
-			$fareType = $fareType[1];
-		}
 
 
+if($flightName!=''){
 
-		if (trim($fareType[1]) == '') {
+ 
 
-			$fareType = $fareType;
-		}
 
 
 
-		if ($flightName != '') {
 
 
 
@@ -2620,14 +2939,15 @@ function makecommission($agentId, $flightName, $flightType, $fareType, $pax, $ba
 
 
 
+/*========================================================Admin==============================================================================================*/
 
 
 
 
 
 
-			/*========================================================Admin==============================================================================================*/
 
+ 
 
 
 
@@ -2635,210 +2955,244 @@ function makecommission($agentId, $flightName, $flightType, $fareType, $pax, $ba
 
 
 
+ $exbaseFare=$baseFare;
 
 
 
 
+$a=GetPageRecord('*','agent_fareTypedomesticFlightsMarkupMaster',' sectorType="'.$_SESSION['domesticorinter'].'"  and agentTypeGroupId="'.$admincommisiontype['commissionType'].'" and flightId in (select id from domesticFlightsMarkupMaster where name="'.$flightName.'")');   
 
+if(mysqli_num_rows($a)>0){
 
+$res=mysqli_fetch_array($a);
 
-			$exbaseFare = $baseFare;
 
 
+if($res['markupType']=='Flat'){
 
+$taxCost=($pax*$res['markupValue']);  
 
-			$a = GetPageRecord('*', 'agent_fareTypedomesticFlightsMarkupMaster', ' sectorType="' . $_SESSION['domesticorinter'] . '"  and agentTypeGroupId="' . $admincommisiontype['commissionType'] . '" and flightId in (select id from domesticFlightsMarkupMaster where name="' . $flightName . '")');
+$finalCost=$baseFare+($pax*$res['markupValue']);  
 
-			if (mysqli_num_rows($a) > 0) {
+$finalCostAdmin=$baseFare+($pax*$res['markupValue']);  
 
-				$res = mysqli_fetch_array($a);
 
 
 
-				if ($res['markupType'] == 'Flat') {
 
-					$taxCost = ($pax * $res['markupValue']);
+$baseFare=$finalCostAdmin; 
 
-					$finalCost = $baseFare + ($pax * $res['markupValue']);
+$returnData = array(round($taxCost+$surcharge), round($taxCost), $finalBaseFare);  
 
-					$finalCostAdmin = $baseFare + ($pax * $res['markupValue']);
+ 
 
+}
 
 
 
+if($res['markupType']=='%'){
 
-					$baseFare = $finalCostAdmin;
+$taxCost=(($baseFare*$res['markupValue']/100));  
 
-					$returnData = array(round($taxCost + $surcharge), round($taxCost), $finalBaseFare);
-				}
+$finalCost=$baseFare+(($baseFare*$res['markupValue']/100));  
 
+$finalCostAdmin=$baseFare+(($baseFare*$res['markupValue']/100));  
 
 
-				if ($res['markupType'] == '%') {
 
-					$taxCost = (($baseFare * $res['markupValue'] / 100));
+$baseFare=$finalCostAdmin; 
 
-					$finalCost = $baseFare + (($baseFare * $res['markupValue'] / 100));
+$returnData = array(round($taxCost+$surcharge), round($taxCost), $finalBaseFare); 
 
-					$finalCostAdmin = $baseFare + (($baseFare * $res['markupValue'] / 100));
+} 
 
 
 
-					$baseFare = $finalCostAdmin;
+$baseFare=$finalCostAdmin;
 
-					$returnData = array(round($taxCost + $surcharge), round($taxCost), $finalBaseFare);
-				}
+}else{
 
 
 
-				$baseFare = $finalCostAdmin;
-			} else {
+$ba=GetPageRecord('*','agent_fareTypedomesticFlightsMarkupMaster',' sectorType="'.$_SESSION['domesticorinter'].'"  and name="All" and agentTypeGroupId="'.$admincommisiontype['commissionType'].'" and flightId in (select id from domesticFlightsMarkupMaster where name="'.$flightName.'")');
 
+if(mysqli_num_rows($ba)>0){
 
+$res=mysqli_fetch_array($ba);
 
-				$ba = GetPageRecord('*', 'agent_fareTypedomesticFlightsMarkupMaster', ' sectorType="' . $_SESSION['domesticorinter'] . '"  and name="All" and agentTypeGroupId="' . $admincommisiontype['commissionType'] . '" and flightId in (select id from domesticFlightsMarkupMaster where name="' . $flightName . '")');
 
-				if (mysqli_num_rows($ba) > 0) {
 
-					$res = mysqli_fetch_array($ba);
+if($res['markupType']=='Flat'){
 
+$taxCost=($pax*$res['markupValue']);  
 
+$finalCost=$baseFare+($pax*$res['markupValue']);  
 
-					if ($res['markupType'] == 'Flat') {
+$finalCostAdmin=$baseFare+($pax*$res['markupValue']);  
 
-						$taxCost = ($pax * $res['markupValue']);
 
-						$finalCost = $baseFare + ($pax * $res['markupValue']);
 
-						$finalCostAdmin = $baseFare + ($pax * $res['markupValue']);
 
 
+$baseFare=$finalCostAdmin; 
 
+  $returnData = array(round($taxCost+$surcharge), round($taxCost), $finalBaseFare); 
 
 
-						$baseFare = $finalCostAdmin;
 
-						$returnData = array(round($taxCost + $surcharge), round($taxCost), $finalBaseFare);
-					}
+}
 
 
 
-					if ($res['markupType'] == '%') {
+if($res['markupType']=='%'){
 
-						$taxCost = (($baseFare * $res['markupValue'] / 100));
+$taxCost=(($baseFare*$res['markupValue']/100));  
 
-						$finalCost = $baseFare + (($baseFare * $res['markupValue'] / 100));
+$finalCost=$baseFare+(($baseFare*$res['markupValue']/100));  
 
-						$finalCostAdmin = $baseFare + (($baseFare * $res['markupValue'] / 100));
+$finalCostAdmin=$baseFare+(($baseFare*$res['markupValue']/100));  
 
 
 
 
 
-						$baseFare = $finalCostAdmin;
+$baseFare=$finalCostAdmin;
 
-						$returnData = array(round($taxCost + $surcharge), round($taxCost), $finalBaseFare);
-					}
+ $returnData = array(round($taxCost+$surcharge), round($taxCost), $finalBaseFare); 
 
+ 
 
+ 
 
-					$baseFare = $finalCostAdmin;
-				}
-			}
 
 
+} 
 
 
 
+$baseFare=$finalCostAdmin;
 
-			/*=======================================================Agent===============================================================================================================*/
+}
 
-			/*====================================================================================================================================================================================*/
 
 
 
 
-			$a = GetPageRecord('*', 'agent_fareTypedomesticFlightsMarkupMaster', '  sectorType="' . $_SESSION['domesticorinter'] . '"  and name in (select displayType from fareTypeMaster where    FIND_IN_SET("' . trim($fareType) . '",fareTypeName) ) and agentTypeGroupId="' . $editresultgroup['commissionType'] . '" and flightId in (select id from domesticFlightsMarkupMaster where name="' . $flightName . '")');
+}
 
-			if (mysqli_num_rows($a) > 0) {
 
-				$res = mysqli_fetch_array($a);
+ 
 
-				if ($res['markupType'] == 'Flat') {
 
-					$taxCost = ($pax * $res['markupValue']);
 
-					$finalCost = $baseFare + ($pax * $res['markupValue']);
+/*=======================================================Agent===============================================================================================================*/
 
+/*====================================================================================================================================================================================*/
 
 
+ 
 
+$a=GetPageRecord('*','agent_fareTypedomesticFlightsMarkupMaster','  sectorType="'.$_SESSION['domesticorinter'].'"  and name in (select displayType from fareTypeMaster where    FIND_IN_SET("'.trim($fareType).'",fareTypeName) ) and agentTypeGroupId="'.$editresultgroup['commissionType'].'" and flightId in (select id from domesticFlightsMarkupMaster where name="'.$flightName.'")');   
 
+if(mysqli_num_rows($a)>0){
 
+$res=mysqli_fetch_array($a);
 
-					$returnData = array(round($taxCost + $surcharge), round($taxCost), $finalBaseFare);
-				}
+if($res['markupType']=='Flat'){
 
+$taxCost=($pax*$res['markupValue']);  
 
+$finalCost=$baseFare+($pax*$res['markupValue']);  
 
-				if ($res['markupType'] == '%') {
 
-					$taxCost = (($baseFare * $res['markupValue'] / 100));
 
-					$finalCost = $baseFare + (($baseFare * $res['markupValue'] / 100));
 
 
 
-					$returnData = array(round($taxCost + $surcharge), round($taxCost), $finalBaseFare);
-				}
-			} else {
 
+$returnData = array(round($taxCost+$surcharge), round($taxCost), $finalBaseFare); 
 
 
-				$ba = GetPageRecord('*', 'agent_fareTypedomesticFlightsMarkupMaster', '   sectorType="' . $_SESSION['domesticorinter'] . '"  and name="All" and agentTypeGroupId="' . $editresultgroup['commissionType'] . '" and flightId in (select id from domesticFlightsMarkupMaster where name="' . $flightName . '")');
 
-				if (mysqli_num_rows($ba) > 0) {
+}
 
-					$res = mysqli_fetch_array($ba);
 
 
+if($res['markupType']=='%'){
 
-					if ($res['markupType'] == 'Flat') {
+$taxCost=(($baseFare*$res['markupValue']/100));  
 
-						$taxCost = ($pax * $res['markupValue']);
+$finalCost=$baseFare+(($baseFare*$res['markupValue']/100));  
 
-						$finalCost = $baseFare + ($pax * $res['markupValue']);
 
 
+$returnData = array(round($taxCost+$surcharge), round($taxCost), $finalBaseFare); 
 
-						$returnData = array(round($taxCost + $surcharge), round($taxCost), $finalBaseFare);
-					}
 
 
+} 
 
-					if ($res['markupType'] == '%') {
+}else{
 
-						$taxCost = (($baseFare * $res['markupValue'] / 100));
 
-						$finalCost = $baseFare + (($baseFare * $res['markupValue'] / 100));
 
+$ba=GetPageRecord('*','agent_fareTypedomesticFlightsMarkupMaster','   sectorType="'.$_SESSION['domesticorinter'].'"  and name="All" and agentTypeGroupId="'.$editresultgroup['commissionType'].'" and flightId in (select id from domesticFlightsMarkupMaster where name="'.$flightName.'")');
 
+if(mysqli_num_rows($ba)>0){
 
-						$returnData = array(round($taxCost + $surcharge), round($taxCost), $finalBaseFare);
-					}
-				}
-			}
-		}
+$res=mysqli_fetch_array($ba);
 
 
 
+if($res['markupType']=='Flat'){
 
+$taxCost=($pax*$res['markupValue']);  
 
+$finalCost=$baseFare+($pax*$res['markupValue']);  
 
 
 
-		return $returnData;
-	}
+$returnData = array(round($taxCost+$surcharge), round($taxCost), $finalBaseFare); 
+
+
+
+}
+
+
+
+if($res['markupType']=='%'){
+
+$taxCost=(($baseFare*$res['markupValue']/100));  
+
+$finalCost=$baseFare+(($baseFare*$res['markupValue']/100));  
+
+
+
+$returnData = array(round($taxCost+$surcharge), round($taxCost), $finalBaseFare); 
+
+
+
+} 
+
+}
+
+}
+
+}
+
+
+
+ 
+ 
+
+
+
+return $returnData; 
+
+}
+
+
+
 }
 
 

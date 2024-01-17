@@ -1,8 +1,8 @@
 <?php
-$fullurl='http://localhost/travbox/masteradmin/'; 
-$websiteurl='http://localhost/travbox/';
-$agentLoginUrl='http://localhost/travbox/loginpage.php';
-$imgurl='http://localhost/travbox/masteradmin/upload/';
+$fullurl='https://test.momtap.in/masteradmin/'; 
+$websiteurl='https://test.momtap.in/';
+$agentLoginUrl='https://test.momtap.in/loginpage.php';
+$imgurl='https://test.momtap.in/masteradmin/upload/';
  
 $PnrCreateUrl = 'http://stageapi.ksofttechnology.com/API/flight';
 $superadminurl = 'https://ofc.travbox.travel/';

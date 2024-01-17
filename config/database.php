@@ -7,8 +7,8 @@ function db() {
 			$servername = "localhost";
 			$username = "root";
 			$password = "";
-			$dbname = "little21_travbox_testing";
-			$conn = mysqli_connect ($servername, $username, $password, $dbname);
+			$dbname = "travbox";
+			$conn = mysqli_connect ($servername, $username, $password, $dbname,3308);
 	}
 // 	print_r($conn);die;
 	return $conn;
